@@ -109,6 +109,27 @@ l2m.log("Block definition saved: " .. tostring(ok))</code></pre></div>
 <p>At startup, L2M runs the entrypoint once in a registration pass. In that pass, only <code>registerBlock</code> and <code>registerItem</code> do anything; chat, log and drawing calls are ignored. Later, when you join a world, L2M runs the entrypoint again as a normal client script.</p>
 <p>Keep registration calls at the top level of the entrypoint. The package entrypoint must be a valid <code>.lua</code> file inside its package folder.</p>
 
+<h2 id="world">World interaction and effects</h2>
+<p>These functions let Lua scripts request TNT, place blocks, create client-side particles and manipulate entities currently loaded on your client. Server-authoritative commands require permission on the current world/server. Client-side entity transforms are visual/local and may be corrected by the server in multiplayer.</p>
+<div class="signature"><code>l2m.explodeTnt(x, y, z, fuseTicks)</code><span class="tag">Server command</span></div>
+<p>Requests a vanilla primed TNT entity at the given coordinates. The fuse defaults to 40 ticks and must be between 1 and 32767. Requires permission to use <code>/summon</code>.</p>
+<div class="codebox"><div class="code-head"><span>tnt.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.explodeTnt(120, 65, -40, 60)</code></pre></div>
+<div class="signature"><code>l2m.setBlock(x, y, z, blockId)</code><span class="tag">Server command</span></div>
+<p>Requests the vanilla <code>/setblock</code> command with the <code>replace</code> mode. The block ID must exist in the Minecraft block registry. Requires command permission.</p>
+<div class="codebox"><div class="code-head"><span>blocks.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.setBlock(0, 64, 0, "minecraft:gold_block")</code></pre></div>
+<div class="signature"><code>l2m.spawnParticle(particleId, x, y, z, vx, vy, vz)</code><span class="tag">Client visual</span></div>
+<p>Spawns one particle on the local client. Velocity components are optional and default to zero. This currently supports registered simple particle types, such as <code>minecraft:flame</code>, <code>minecraft:smoke</code>, <code>minecraft:happy_villager</code> and <code>minecraft:cloud</code>.</p>
+<div class="codebox"><div class="code-head"><span>particles.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.spawnParticle("minecraft:flame", 0.5, 65, 0.5, 0, 0.08, 0)
+l2m.spawnParticle("minecraft:smoke", 0.5, 65, 0.5, 0, 0.04, 0)</code></pre></div>
+<div class="signature"><code>l2m.moveEntity(uuid, x, y, z, vx, vy, vz)</code><span class="tag">Client transform</span></div>
+<p>Moves a currently loaded entity identified by UUID and optionally sets its velocity. The optional velocity must be supplied as all three components. This modifies the client-side entity instance; authoritative server movement can overwrite it.</p>
+<div class="signature"><code>l2m.setEntityVelocity(uuid, vx, vy, vz)</code><span class="tag">Client transform</span></div>
+<p>Sets velocity on a loaded client entity. This is useful for local visual experiments and client-side entities. It does not grant control over remote server entities.</p>
+<div class="signature"><code>l2m.launchRocket(speed)</code><span class="tag">Server command</span></div>
+<p>Launches a vanilla fireball from the player's eye position in the direction they are looking. Speed defaults to <code>1.8</code> and is limited to <code>0.1–8.0</code>. Requires permission to use <code>/summon</code>.</p>
+<div class="codebox"><div class="code-head"><span>rocket.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.launchRocket(2.4)</code></pre></div>
+<p>These APIs return <code>true</code> when the local operation or command submission succeeds. A successful command submission does not guarantee the server accepts the command.</p>
+
 <h2 id="events">Client event subscriptions</h2>
 <p><code>l2m.on(eventName, callback)</code> subscribes the current Lua runtime to one of the events listed below. Events are delivered to the client Lua runtime. Callback errors are logged and do not stop other listeners.</p>
 <div class="signature"><code>l2m.on(eventName, callback)</code><span class="tag">Client</span></div>
@@ -144,7 +165,7 @@ end)</code></pre></div>
 
 <div class="page-foot"><span>Lua API provided by the current L2M source.</span><a href="https://github.com/DeathAmir/L2M">Browse source ↗</a></div>
 </main>
-<aside class="toc"><b>ON THIS PAGE</b><a href="#chat">Chat messages</a><a href="#log">Logging</a><a href="#drawtext">drawText</a><a href="#drawrect">drawRect</a><a href="#cleardraw">clearDraw</a><a href="#registerblock">registerBlock</a><a href="#registeritem">registerItem</a><a href="#commands">Commands</a><a href="#packages">Packages</a></aside>
+<aside class="toc"><b>ON THIS PAGE</b><a href="#chat">Chat messages</a><a href="#log">Logging</a><a href="#drawtext">drawText</a><a href="#drawrect">drawRect</a><a href="#cleardraw">clearDraw</a><a href="#registerblock">registerBlock</a><a href="#registeritem">registerItem</a><a href="#world">World API</a><a href="#commands">Commands</a><a href="#packages">Packages</a></aside>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
