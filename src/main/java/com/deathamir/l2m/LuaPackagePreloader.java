@@ -43,13 +43,13 @@ public final class LuaPackagePreloader {
                     if (!script.startsWith(root) || !entrypoint.endsWith(".lua") || !Files.isRegularFile(script))
                         throw new IllegalArgumentException("Invalid or missing package entrypoint.");
                     preloadScript(script);
-                    LOGGER.info("Preloaded L2M package definitions from {}", packageId);
+                    L2M.LOGGER.info("Preloaded L2M package definitions from {}", packageId);
                 } catch (Exception e) {
-                    LOGGER.error("Could not preload L2M package {}", directory.getFileName(), e);
+                    L2M.LOGGER.error("Could not preload L2M package {}", directory.getFileName(), e);
                 }
             });
         } catch (IOException e) {
-            LOGGER.error("Could not scan L2M packages before registry setup", e);
+            L2M.LOGGER.error("Could not scan L2M packages before registry setup", e);
         }
     }
 
