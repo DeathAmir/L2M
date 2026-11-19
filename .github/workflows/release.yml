@@ -140,10 +140,19 @@ jobs:
               releaseType: $releaseType
             }')"
 
-          RESPONSE="$(curl -fsS -X POST \
+          echo "Uploading $(basename "$JAR_PATH") to CurseForge project $CF_PROJECT_ID"
+          echo "Metadata: $METADATA"
+
+          RESPONSE="$(curl --silent --show-error --fail-with-body -X POST \
             -H "X-Api-Token: $CF_API_TOKEN" \
             -F "metadata=$METADATA" \
             -F "file=@$JAR_PATH;type=application/java-archive" \
             "https://minecraft.curseforge.com/api/projects/$CF_PROJECT_ID/upload-file")"
 
           echo "CurseForge upload response: $RESPONSE"
+          FILE_ID="$(printf '%s' "$RESPONSE" | jq -r '.id // empty')"
+          if [[ -z "$FILE_ID" ]]; then
+            echo "CurseForge did not return a file ID."
+            exit 1
+          fi
+          echo "CurseForge file uploaded successfully. File ID: $FILE_ID"
