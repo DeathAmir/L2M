@@ -14,6 +14,7 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
+import org.luaj.vm2.lib.ZeroArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
@@ -117,8 +118,8 @@ public final class LuaClientCommands {
                     return LuaValue.NIL;
                 }
             });
-            api.set("clearDraw", new OneArgFunction() {
-                @Override public LuaValue call(LuaValue ignored) { LuaRenderBridge.clear(); return LuaValue.NIL; }
+            api.set("clearDraw", new ZeroArgFunction() {
+                @Override public LuaValue call() { LuaRenderBridge.clear(); return LuaValue.NIL; }
             });
             globals.set("l2m", api);
             globals.load(Files.readString(normalized), "@" + normalized.getFileName()).call();
