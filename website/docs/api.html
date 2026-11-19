@@ -109,6 +109,41 @@ l2m.log("Block definition saved: " .. tostring(ok))</code></pre></div>
 <p>At startup, L2M runs the entrypoint once in a registration pass. In that pass, only <code>registerBlock</code> and <code>registerItem</code> do anything; chat, log and drawing calls are ignored. Later, when you join a world, L2M runs the entrypoint again as a normal client script.</p>
 <p>Keep registration calls at the top level of the entrypoint. The package entrypoint must be a valid <code>.lua</code> file inside its package folder.</p>
 
+<h2 id="content-inventory">Categories, item definitions and inventory</h2>
+<p>L2M packages can define categories and catalog entries. Item definitions map to an existing Minecraft item so the Give and Equip actions use real Minecraft inventory stacks, shield behavior and armor slots. These definitions do not register brand-new Minecraft item IDs or change vanilla combat attributes yet.</p>
+<div class="signature"><code>l2m.defineCategory(id, properties)</code><span class="tag">Content definition</span></div>
+<p>Creates a category with <code>displayName</code>, <code>icon</code> (a registered Minecraft item ID), optional <code>description</code> and <code>sortOrder</code>.</p>
+<div class="signature"><code>l2m.registerItem(id, properties)</code><span class="tag">Content definition</span></div>
+<p>Defines a catalog item with <code>displayName</code>, <code>description</code>, <code>category</code>, <code>minecraftItem</code>, <code>icon</code>, optional <code>texture</code>, <code>slot</code>, <code>stackSize</code>, <code>armor</code> and <code>toughness</code>. <code>minecraftItem</code> must be a registered item ID. Valid slots are <code>mainhand</code>, <code>offhand</code>, <code>shield</code>, <code>head</code>, <code>chest</code>, <code>legs</code> and <code>feet</code>. Armor/toughness are metadata only; the mapped Minecraft item supplies actual stats.</p>
+<div class="signature"><code>l2m.openInventory(category?)</code><span class="tag">Client UI</span></div>
+<p>Opens the L2M categorized item catalog. Omit the category to show all entries, or pass a category ID to start filtered. The <code>/l2m inventory</code> client command opens the same screen.</p>
+<div class="signature"><code>l2m.giveCustomItem(id, count?)</code><span class="tag">Server command</span></div>
+<p>Requests the mapped Minecraft item through <code>/give @s</code>. Count defaults to one. Requires server permission.</p>
+<div class="signature"><code>l2m.equipItem(id)</code><span class="tag">Server command</span></div>
+<p>Requests the mapped Minecraft item in the configured equipment slot using <code>/item replace</code>. Requires server permission.</p>
+<div class="signature"><code>l2m.listCategories()</code><span class="tag">Lua table</span></div>
+<p>Returns an array-like Lua table of registered category IDs.</p>
+<div class="codebox"><div class="code-head"><span>equipment.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.defineCategory("shields", {
+    displayName = "Shields",
+    icon = "minecraft:shield",
+    description = "Defensive equipment"
+})
+
+l2m.registerItem("iron_guard", {
+    displayName = "Iron Guard Shield",
+    description = "A shield equipped in the offhand",
+    category = "shields",
+    minecraftItem = "minecraft:shield",
+    icon = "minecraft:shield",
+    slot = "offhand",
+    stackSize = 1
+})
+
+l2m.giveCustomItem("iron_guard", 1)
+l2m.equipItem("iron_guard")
+l2m.openInventory("shields")</code></pre></div>
+<p>For custom catalog art, place a 16×16 PNG in the mod resources, for example <code>assets/l2m/textures/items/iron_guard.png</code>, and set <code>texture = "l2m:textures/items/iron_guard.png"</code>. The inventory screen displays that texture instead of the mapped item's icon.</p>
+
 <h2 id="world">World interaction and effects</h2>
 <p>These functions let Lua scripts request TNT, place blocks, create client-side particles and manipulate entities currently loaded on your client. Server-authoritative commands require permission on the current world/server. Client-side entity transforms are visual/local and may be corrected by the server in multiplayer.</p>
 <div class="signature"><code>l2m.explodeTnt(x, y, z, fuseTicks)</code><span class="tag">Server command</span></div>
@@ -165,7 +200,7 @@ end)</code></pre></div>
 
 <div class="page-foot"><span>Lua API provided by the current L2M source.</span><a href="https://github.com/DeathAmir/L2M">Browse source ↗</a></div>
 </main>
-<aside class="toc"><b>ON THIS PAGE</b><a href="#chat">Chat messages</a><a href="#log">Logging</a><a href="#drawtext">drawText</a><a href="#drawrect">drawRect</a><a href="#cleardraw">clearDraw</a><a href="#registerblock">registerBlock</a><a href="#registeritem">registerItem</a><a href="#world">World API</a><a href="#commands">Commands</a><a href="#packages">Packages</a></aside>
+<aside class="toc"><b>ON THIS PAGE</b><a href="#chat">Chat messages</a><a href="#log">Logging</a><a href="#drawtext">drawText</a><a href="#drawrect">drawRect</a><a href="#cleardraw">clearDraw</a><a href="#registerblock">registerBlock</a><a href="#registeritem">registerItem</a><a href="#content-inventory">Items &amp; inventory</a><a href="#world">World API</a><a href="#commands">Commands</a><a href="#packages">Packages</a></aside>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
