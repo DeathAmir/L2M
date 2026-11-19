@@ -15,7 +15,7 @@ loaderVersion="${loader_version_range}" #mandatory
 license="${mod_license}"
 
 # A URL to refer people to when problems occur with this mod
-#issueTrackerURL="https://github.com/DeathAmir/L2M/issues" #optional
+issueTrackerURL="https://github.com/DeathAmir/L2M/issues"
 
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
@@ -33,16 +33,16 @@ displayName="${mod_name}" #mandatory
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 
 # A URL for the "homepage" for this mod, displayed in the mod UI
-#displayURL="https://irautox.ir/L2M" #optional
+displayURL="https://deathamir.github.io/L2M/"
 
 # A file name (in the root of the mod JAR) containing a logo for display
-#logoFile="examplemod.png" #optional
+logoFile="l2m.png"
 
 # A text field displayed in the mod UI
 #credits="" #optional
 
 # The authors of the mod, displayed in the mod UI (optional)
-#authors="DeathAmir"
+authors="DeathAmir"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
