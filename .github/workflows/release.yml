@@ -71,7 +71,7 @@ jobs:
           RELEASE_VERSION: ${{ inputs.version }}
         run: |
           chmod +x ./gradlew
-          ./gradlew --no-daemon clean build -Pmod_version="$RELEASE_VERSION"
+          ./gradlew --no-daemon --refresh-dependencies clean build -Pmod_version="$RELEASE_VERSION"
 
       - name: Locate release JAR
         id: jar
