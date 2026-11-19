@@ -1,0 +1,7 @@
+{
+  "id": "rocket-launcher",
+  "name": "L2M Rocket Launcher",
+  "version": "1.0.0",
+  "entrypoint": "scripts/main.lua",
+  "description": "A client-side test rocket launcher triggered by using a firework rocket."
+}
