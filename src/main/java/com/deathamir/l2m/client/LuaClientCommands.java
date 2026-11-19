@@ -267,6 +267,20 @@ public final class LuaClientCommands {
             api.set("clearDraw", new ZeroArgFunction() {
                 @Override public LuaValue call() { LuaRenderBridge.clear(); return LuaValue.NIL; }
             });
+            api.set("giveItem", new TwoArgFunction() {
+                @Override public LuaValue call(LuaValue itemValue, LuaValue countValue) {
+                    String itemId = itemValue.checkjstring();
+                    int count = countValue.checkint();
+                    if (count < 1 || count > 64) throw new LuaError("Item count must be between 1 and 64.");
+                    net.minecraft.resources.ResourceLocation id = net.minecraft.resources.ResourceLocation.tryParse(itemId);
+                    if (id == null || !net.minecraft.core.registries.BuiltInRegistries.ITEM.containsKey(id))
+                        throw new LuaError("Unknown item: " + itemId);
+                    var connection = Minecraft.getInstance().getConnection();
+                    if (connection == null) throw new LuaError("You must be in a world to give items.");
+                    connection.sendCommand("give @s " + id + " " + count);
+                    return LuaValue.TRUE;
+                }
+            });
             globals.set("l2m", api);
             globals.load(Files.readString(normalized), "@" + normalized.getFileName()).call();
             String success = "Executed " + normalized.getFileName();
