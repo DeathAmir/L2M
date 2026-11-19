@@ -1,0 +1,11 @@
+{
+  "id": "hello-world",
+  "name": "L2M Hello World",
+  "version": "1.0.0",
+  "entrypoint": "scripts/main.lua",
+  "description": "A starter Lua2Minecraft package.",
+  "minecraft": "1.21.1",
+  "dependencies": [],
+  "assets": "assets",
+  "languages": ["en_us"]
+}
