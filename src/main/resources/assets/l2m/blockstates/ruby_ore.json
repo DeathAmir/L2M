@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "l2m:block/ruby_ore"
+    }
+  }
+}
