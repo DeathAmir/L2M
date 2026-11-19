@@ -102,14 +102,17 @@ jobs:
 
       - name: Upload to CurseForge
         if: ${{ inputs.publish_curseforge }}
-        uses: itsmeow/curseforge-upload@v3
+        uses: Kir-Antipov/mc-publish@v3.3
         with:
-          token: ${{ secrets.CURSEFORGE_API_TOKEN }}
-          project_id: ${{ secrets.CURSEFORGE_PROJECT_ID }}
-          game_endpoint: minecraft
-          file_path: ${{ steps.jar.outputs.path }}
-          game_versions: "77784:11779,68441:10150,75208:9638,75208:9639"
-          release_type: ${{ inputs.release_type }}
-          display_name: "L2M v${{ inputs.version }}"
+          curseforge-id: ${{ secrets.CURSEFORGE_PROJECT_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_API_TOKEN }}
+          files: ${{ steps.jar.outputs.path }}
+          name: "L2M v${{ inputs.version }}"
+          version: ${{ inputs.version }}
+          version-type: ${{ inputs.release_type }}
           changelog: ${{ inputs.release_notes }}
-          changelog_type: markdown
+          loaders: neoforge
+          environment: client | server
+          game-versions: |
+            1.21.1
+          game-version-filter: none
