@@ -115,3 +115,19 @@ idea {
         downloadJavadoc = true
     }
 }
+
+
+tasks.register('packageMods', Zip) {
+    group = 'build'
+    description = 'Build distributable Lua2Minecraft example mod packages.'
+    archiveFileName = "L2M-packages-${project.version}.zip"
+    destinationDirectory = layout.buildDirectory.dir('packages')
+    from('packages') {
+        include '**/*'
+        exclude '**/.DS_Store'
+    }
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('packageMods')
+}
