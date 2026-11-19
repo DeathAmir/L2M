@@ -8,7 +8,7 @@
 
 **Bring the flexibility of Lua to Minecraft mod development.**
 
-[Documentation](https://irautox.ir/L2M) · [Website](https://irautox.ir) · [Issues](https://github.com/DeathAmir/L2M/issues) · [Source](https://github.com/DeathAmir/L2M)
+[Documentation](https://DeathAmir.github.io/L2M/) · [Website](https://irautox.ir) · [Issues](https://github.com/DeathAmir/L2M/issues) · [Source](https://github.com/DeathAmir/L2M)
 
 ![Stars](https://img.shields.io/github/stars/DeathAmir/L2M?style=flat-square&logo=github&label=Stars)
 ![Forks](https://img.shields.io/github/forks/DeathAmir/L2M?style=flat-square&logo=github&label=Forks)
