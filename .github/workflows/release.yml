@@ -19,7 +19,7 @@ on:
           - release
           - beta
           - alpha
-        default: release
+        default: beta
       publish_curseforge:
         description: "Upload the JAR to CurseForge"
         required: true
@@ -94,7 +94,9 @@ jobs:
           name: L2M v${{ inputs.version }}
           body: ${{ inputs.release_notes }}
           target_commitish: ${{ github.sha }}
-          files: ${{ steps.jar.outputs.path }}
+          files: |
+            ${{ steps.jar.outputs.path }}
+            build/packages/L2M-packages-*.zip
           draft: false
           prerelease: ${{ inputs.release_type != 'release' }}
 
