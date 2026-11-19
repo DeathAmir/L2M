@@ -68,7 +68,7 @@ public final class LuaWorldApi {
                 } catch (IllegalArgumentException error) {
                     throw new LuaError("Invalid entity UUID.");
                 }
-                var entity = level.entitiesForRendering().stream().filter(candidate -> candidate.getUUID().equals(uuid)).findFirst().orElse(null);
+                var entity = findEntity(level, uuid);
                 if (entity == null) throw new LuaError("Entity is not currently loaded on this client.");
                 entity.setPos(args.arg(2).checkdouble(), args.arg(3).checkdouble(), args.arg(4).checkdouble());
                 if (args.narg() >= 7) entity.setDeltaMovement(args.arg(5).checkdouble(), args.arg(6).checkdouble(), args.arg(7).checkdouble());
@@ -91,6 +91,13 @@ public final class LuaWorldApi {
                 return LuaValue.TRUE;
             }
         });
+    }
+
+    private static net.minecraft.world.entity.Entity findEntity(net.minecraft.client.multiplayer.ClientLevel level, UUID uuid) {
+        for (var entity : level.entitiesForRendering()) {
+            if (entity.getUUID().equals(uuid)) return entity;
+        }
+        return null;
     }
 
     private static void sendCommand(String command) {
