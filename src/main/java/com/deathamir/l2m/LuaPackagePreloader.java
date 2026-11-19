@@ -36,7 +36,7 @@ public final class LuaPackagePreloader {
                     JsonObject manifest = JsonParser.parseString(Files.readString(manifestPath)).getAsJsonObject();
                     String packageId = manifest.has("id") ? manifest.get("id").getAsString() : "";
                     String entrypoint = manifest.has("entrypoint") ? manifest.get("entrypoint").getAsString() : "";
-                    if (!validId(packageId) || !directory.getFileName().toString().equals(packageId))
+                    if (!validPackageId(packageId) || !directory.getFileName().toString().equals(packageId))
                         throw new IllegalArgumentException("Package id does not match its directory.");
                     Path root = directory.toAbsolutePath().normalize();
                     Path script = root.resolve(entrypoint).normalize();
@@ -108,6 +108,10 @@ public final class LuaPackagePreloader {
         } catch (IOException e) {
             throw new LuaError("Could not save generated content: " + e.getMessage());
         }
+    }
+
+    private static boolean validPackageId(String id) {
+        return id.matches("[a-z0-9][a-z0-9_-]{0,47}");
     }
 
     private static boolean validId(String id) {
