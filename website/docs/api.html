@@ -13,7 +13,7 @@
 <aside class="sidebar" id="sidebar">
 <div class="searchbox"><span>⌕</span><input id="docSearch" placeholder="Search documentation"><kbd>Ctrl K</kbd></div>
 <div class="nav-label">GET STARTED</div><a class="nav-item" href="../">Overview</a><a class="nav-item" href="installation.html">Installation</a><a class="nav-item" href="first-script.html">Your first script</a>
-<div class="nav-label">LUA API</div><details class="nav-group" open><summary>Functions <span>⌄</span></summary><a href="#chat">Chat</a><a href="#log">Log</a><a href="#drawtext">drawText</a><a href="#drawrect">drawRect</a><a href="#cleardraw">clearDraw</a><a href="#registerblock">registerBlock</a><a href="#registeritem">registerItem</a></details>
+<div class="nav-label">LUA API</div><details class="nav-group" open><summary>Functions <span>⌄</span></summary><a href="#chat">Chat</a><a href="#log">Log</a><a href="#drawtext">drawText</a><a href="#drawrect">drawRect</a><a href="#cleardraw">clearDraw</a><a href="#registerblock">registerBlock</a><a href="#registeritem">registerItem</a><a href="#events">Events</a></details>
 <div class="nav-label">MORE</div><a class="nav-item" href="#commands">Commands</a><a class="nav-item" href="#packages">Packages</a><a class="nav-item" href="examples.html">Examples</a>
 <a class="nav-item" href="contributing.html"><i data-lucide="git-pull-request"></i>Contributing</a><div class="nav-label">PROJECT</div><a class="nav-item" href="releases.html"><i data-lucide="rocket"></i>Releases</a><a class="nav-item" href="commands.html"><i data-lucide="terminal"></i>Commands</a><a class="nav-item" href="packages.html"><i data-lucide="package"></i>Packages</a><a class="nav-item" href="troubleshooting.html"><i data-lucide="life-buoy"></i>Troubleshooting</a><a class="nav-item" href="architecture.html"><i data-lucide="network"></i>Project structure</a><div class="sidebar-bottom"><span class="status-dot"></span>API reference</div>
 </aside>
@@ -108,6 +108,18 @@ l2m.log("Block definition saved: " .. tostring(ok))</code></pre></div>
 }</code></pre></div>
 <p>At startup, L2M runs the entrypoint once in a registration pass. In that pass, only <code>registerBlock</code> and <code>registerItem</code> do anything; chat, log and drawing calls are ignored. Later, when you join a world, L2M runs the entrypoint again as a normal client script.</p>
 <p>Keep registration calls at the top level of the entrypoint. The package entrypoint must be a valid <code>.lua</code> file inside its package folder.</p>
+
+<h2 id="events">Client event subscriptions</h2><p><code>l2m.on(eventName, callback)</code> subscribes the current Lua runtime to a supported client event. Callbacks are protected: a Lua error is logged and does not stop other listeners.</p><div class="signature"><code>l2m.on(eventName, callback)</code><span class="tag">Client</span></div><div class="codebox"><div class="code-head"><span>events.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.on("player_join", function(playerName)
+    l2m.log("World joined by " .. playerName)
+end)
+
+l2m.on("player_leave", function(playerName)
+    l2m.log("World left by " .. playerName)
+end)
+
+l2m.on("client_tick", function()
+    -- Keep per-tick work small.
+end)</code></pre></div><table class="param-table"><tr><th>Event</th><th>Arguments</th><th>When it fires</th></tr><tr><td><code>client_tick</code></td><td>none</td><td>Once per client tick while a player is in a world.</td></tr><tr><td><code>player_join</code></td><td><code>playerName: string</code></td><td>When the local client joins a world.</td></tr><tr><td><code>player_leave</code></td><td><code>playerName: string</code></td><td>When the local client leaves a world.</td></tr></table><p>Listeners are cleared when leaving the world. Package entrypoints register their listeners during their normal client execution after joining a world.</p>
 
 <div class="page-foot"><span>Lua API provided by the current L2M source.</span><a href="https://github.com/DeathAmir/L2M">Browse source ↗</a></div>
 </main>
