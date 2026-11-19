@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
 
 import com.deathamir.l2m.L2M;
