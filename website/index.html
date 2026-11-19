@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111426">
+<title>L2M — Lua2Minecraft</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="./">L2M</a><nav><a href="#docs">Documentation</a><a href="#examples">Examples</a><a href="https://github.com/DeathAmir/L2M">GitHub</a></nav></header>
+<main>
+<section class="hero"><span class="eyebrow">NEOFORGE · MINECRAFT 1.21.1 · LUA 5.1</span><h1>Lua meets<br><em>Minecraft.</em></h1><p>Write small gameplay scripts in Lua and run them from your Minecraft client with L2M.</p><a class="button" href="https://github.com/DeathAmir/L2M/releases">Get releases</a><a class="plain" href="#docs">Read the docs ↓</a></section>
+<section id="docs" class="section"><span class="eyebrow">GETTING STARTED</span><h2>Run your first script</h2><ol><li>Install the L2M JAR and NeoForge for Minecraft 1.21.1.</li><li>Launch the game once. L2M creates <code>config/l2m/scripts</code> when you add your first script folder.</li><li>Create <code>hello.lua</code> in that folder.</li><li>Enter a world and run <code>/l2m run hello</code>.</li></ol><pre><code>l2m.chat("Hello from Lua 5.1!")</code></pre><p class="note">The API is an early preview. At this stage, scripts can send chat messages from the client. More game APIs will be added gradually.</p></section>
+<section id="examples" class="section"><span class="eyebrow">LUA API · FIRST FUNCTION</span><h2>Chat</h2><p><code>l2m.chat(message)</code> sends a message using the connected Minecraft client. The message is subject to the server's normal chat rules and limits.</p><pre><code>l2m.chat("Hello, server!")
+l2m.chat("This message came from a Lua script.")</code></pre><p>See the <a href="https://github.com/DeathAmir/L2M/tree/main/examples">examples folder</a> for a ready-to-use script.</p></section>
+<section class="section"><span class="eyebrow">PROJECT STATUS</span><h2>Early development</h2><p>L2M currently embeds LuaJ, a Java implementation of Lua 5.1. Its public scripting API is experimental and may change between versions.</p><a class="plain" href="https://github.com/DeathAmir/L2M/issues">Report an issue →</a></section>
+</main><footer>Developed by DeathAmir · IRAutoX · <a href="https://github.com/DeathAmir/L2M">GitHub</a></footer>
+</body></html>
