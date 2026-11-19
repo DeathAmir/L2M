@@ -88,3 +88,19 @@ For now, you can follow development, inspect the source code, or open an issue w
 **IRAutoX**
 
 </div>
+
+## Documentation
+
+- [Getting started](https://deathamir.github.io/L2M/docs/)
+- [Lua examples](https://deathamir.github.io/L2M/docs/examples.html)
+- [Lua API reference](https://deathamir.github.io/L2M/docs/api.html)
+
+## First client script
+
+Create `config/l2m/scripts/hello.lua`:
+
+```lua
+l2m.chat("Hello from Lua and L2M!")
+```
+
+Run it in a world with `/l2m run hello`. You can also use `/l2m chat <message>` directly. The current preview only exposes `l2m.chat(message)`; scripts execute on the client. Only run scripts you trust.
