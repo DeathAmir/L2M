@@ -68,6 +68,12 @@ public final class LuaPackagePreloader {
                 return LuaValue.TRUE;
             }
         });
+        api.set("defineCategory", new TwoArgFunction() {
+            @Override public LuaValue call(LuaValue id, LuaValue properties) {
+                saveDefinition("categories", id.checkjstring(), properties.checktable());
+                return LuaValue.TRUE;
+            }
+        });
         VarArgFunction ignored = new VarArgFunction() {
             @Override public org.luaj.vm2.Varargs invoke(org.luaj.vm2.Varargs args) {
                 return LuaValue.NIL;
@@ -96,16 +102,35 @@ public final class LuaPackagePreloader {
 
     private static void saveDefinition(String type, String id, LuaTable properties) {
         if (!validId(id)) throw new LuaError("Content id must use lowercase letters, numbers and underscores.");
-        Map<String, Object> definition = new LinkedHashMap<>();
-        definition.put("id", id);
-        definition.put("displayName", properties.get("displayName").optjstring(id));
+        JsonObject definition = new JsonObject();
+        definition.addProperty("id", id);
+        definition.addProperty("displayName", properties.get("displayName").optjstring(id));
         if (type.equals("blocks")) {
-            definition.put("hardness", properties.get("hardness").optdouble(1.5));
-            definition.put("requiresTool", properties.get("requiresTool").optboolean(false));
+            definition.addProperty("hardness", properties.get("hardness").optdouble(1.5));
+            definition.addProperty("requiresTool", properties.get("requiresTool").optboolean(false));
+            definition.addProperty("category", properties.get("category").optjstring("building"));
+            definition.addProperty("icon", properties.get("icon").optjstring("minecraft:stone"));
+            definition.addProperty("texture", properties.get("texture").optjstring(""));
+            definition.addProperty("description", properties.get("description").optjstring(""));
+        } else if (type.equals("categories")) {
+            definition.addProperty("icon", properties.get("icon").optjstring("minecraft:chest"));
+            definition.addProperty("description", properties.get("description").optjstring(""));
+            definition.addProperty("sortOrder", properties.get("sortOrder").optint(0));
         } else {
             int stackSize = properties.get("stackSize").optint(64);
             if (stackSize < 1 || stackSize > 99) throw new LuaError("Item stackSize must be between 1 and 99.");
-            definition.put("stackSize", stackSize);
+            String slot = properties.get("slot").optjstring("mainhand");
+            if (!java.util.List.of("mainhand", "offhand", "shield", "head", "chest", "legs", "feet").contains(slot))
+                throw new LuaError("Invalid item equipment slot.");
+            definition.addProperty("stackSize", stackSize);
+            definition.addProperty("category", properties.get("category").optjstring("misc"));
+            definition.addProperty("minecraftItem", properties.get("minecraftItem").optjstring("minecraft:stone"));
+            definition.addProperty("slot", slot);
+            definition.addProperty("description", properties.get("description").optjstring(""));
+            definition.addProperty("icon", properties.get("icon").optjstring(properties.get("minecraftItem").optjstring("minecraft:stone")));
+            definition.addProperty("texture", properties.get("texture").optjstring(""));
+            definition.addProperty("armor", properties.get("armor").optint(0));
+            definition.addProperty("toughness", properties.get("toughness").optdouble(0));
         }
         try {
             Path output = GENERATED_DIR.resolve(type).resolve(id + ".json");
