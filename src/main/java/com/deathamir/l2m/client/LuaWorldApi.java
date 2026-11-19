@@ -28,6 +28,21 @@ public final class LuaWorldApi {
                 return LuaValue.TRUE;
             }
         });
+        api.set("launchRocket", new VarArgFunction() {
+            @Override public Varargs invoke(Varargs args) {
+                var player = Minecraft.getInstance().player;
+                if (player == null) throw new LuaError("You must be in a world to launch a rocket.");
+                double speed = args.narg() >= 1 ? args.arg(1).checkdouble() : 1.8;
+                if (speed < 0.1 || speed > 8.0) throw new LuaError("Rocket speed must be between 0.1 and 8.");
+                var eye = player.getEyePosition();
+                var look = player.getLookAngle().normalize().scale(speed);
+                double x = eye.x + look.x * 1.2;
+                double y = eye.y + look.y * 1.2;
+                double z = eye.z + look.z * 1.2;
+                sendCommand("summon minecraft:fireball " + x + " " + y + " " + z + " {Motion:[" + look.x + "d," + look.y + "d," + look.z + "d],ExplosionPower:2b}");
+                return LuaValue.TRUE;
+            }
+        });
         api.set("setBlock", new VarArgFunction() {
             @Override public Varargs invoke(Varargs args) {
                 int x = args.arg(1).checkint();
