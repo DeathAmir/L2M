@@ -309,13 +309,22 @@ public final class LuaClientCommands {
         Map<String, Object> definition = new LinkedHashMap<>();
         definition.put("id", name);
         definition.put("source", script.getFileName().toString());
+        definition.put("displayName", properties.get("displayName").optjstring(name));
         if (type.equals("blocks")) {
-            definition.put("displayName", properties.get("displayName").optjstring(name));
             definition.put("hardness", properties.get("hardness").optdouble(1.5));
             definition.put("requiresTool", properties.get("requiresTool").optboolean(false));
+            definition.put("category", properties.get("category").optjstring("building"));
+            definition.put("icon", properties.get("icon").optjstring("minecraft:stone"));
+            definition.put("texture", properties.get("texture").optjstring(""));
+            definition.put("description", properties.get("description").optjstring(""));
         } else {
-            definition.put("displayName", properties.get("displayName").optjstring(name));
+            definition.put("category", properties.get("category").optjstring("misc"));
+            definition.put("minecraftItem", properties.get("minecraftItem").optjstring("minecraft:stone"));
+            definition.put("slot", properties.get("slot").optjstring("mainhand"));
             definition.put("stackSize", properties.get("stackSize").optint(64));
+            definition.put("icon", properties.get("icon").optjstring(properties.get("minecraftItem").optjstring("minecraft:stone")));
+            definition.put("texture", properties.get("texture").optjstring(""));
+            definition.put("description", properties.get("description").optjstring(""));
         }
         try {
             Path output = ROOT.resolve("generated").resolve(type).resolve(name + ".json");
