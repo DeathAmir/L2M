@@ -33,7 +33,7 @@ public final class LuaEventBus {
         if (listeners == null || listeners.isEmpty()) return;
         for (LuaValue listener : listeners) {
             try {
-                listener.invoke(args);
+                listener.invoke(LuaValue.varargsOf(args));
             } catch (LuaError | RuntimeException error) {
                 L2M.LOGGER.error("L2M event '{}' callback failed", name, error);
                 LuaDeveloperConsole.log("EVENT ERROR [" + name + "]: " + error.getMessage());
