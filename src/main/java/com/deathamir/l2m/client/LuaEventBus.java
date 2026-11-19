@@ -12,7 +12,13 @@ import com.deathamir.l2m.L2M;
 
 public final class LuaEventBus {
     private static final Map<String, List<LuaValue>> LISTENERS = new ConcurrentHashMap<>();
-    private static final List<String> EVENT_NAMES = List.of("client_tick", "player_join", "player_leave");
+    private static final List<String> EVENT_NAMES = List.of(
+        "client_tick",
+        "player_join",
+        "player_leave",
+        "player_hurt",
+        "player_eat"
+    );
 
     private LuaEventBus() {}
 
@@ -21,7 +27,7 @@ public final class LuaEventBus {
     }
 
     public static void subscribe(String name, LuaValue callback) {
-        if (!isSupported(name)) throw new LuaError("Unsupported event '" + name + "'. Supported: client_tick, player_join, player_leave.");
+        if (!isSupported(name)) throw new LuaError("Unsupported event '" + name + "'. Supported: " + String.join(", ", EVENT_NAMES) + ".");
         if (!callback.isfunction()) throw new LuaError("Event callback must be a function.");
         List<LuaValue> listeners = LISTENERS.computeIfAbsent(name, key -> new CopyOnWriteArrayList<>());
         if (listeners.size() >= 128) throw new LuaError("Listener limit reached for event " + name + ".");
