@@ -77,7 +77,7 @@ jobs:
         id: jar
         shell: bash
         run: |
-          JAR_FILE="$(find build/libs -maxdepth 1 -type f -name '*.jar'             ! -name '*-sources.jar'             ! -name '*-javadoc.jar'             ! -name '*-dev.jar' | sort | head -n 1)"
+          JAR_FILE="$(find build/libs -maxdepth 1 -type f -name "L2M-*.jar" ! -name "*-sources.jar" ! -name "*-javadoc.jar" ! -name "*-dev.jar" | sort | head -n 1)"
           if [[ -z "$JAR_FILE" ]]; then
             echo "No release JAR found in build/libs."
             exit 1
