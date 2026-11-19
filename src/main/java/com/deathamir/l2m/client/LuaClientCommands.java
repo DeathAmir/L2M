@@ -53,7 +53,116 @@ public final class LuaClientCommands {
                 .then(Commands.argument("package", StringArgumentType.word())
                     .then(Commands.argument("script", StringArgumentType.word())
                         .executes(c -> runPackageScript(c.getSource(), StringArgumentType.getString(c, "package"), StringArgumentType.getString(c, "script")))))))
-            .then(Commands.literal("packages").executes(c -> listPackages(c.getSource()))));
+            .then(Commands.literal("packages").executes(c -> listPackages(c.getSource())))
+            .then(Commands.literal("console").executes(c -> {
+                Minecraft.getInstance().setScreen(new LuaDeveloperConsole());
+                return 1;
+            }))
+            .then(Commands.literal("package")
+                .then(Commands.literal("list").executes(c -> listPackages(c.getSource())))
+                .then(Commands.literal("validate").then(Commands.argument("package", StringArgumentType.word())
+                    .executes(c -> validatePackage(c.getSource(), StringArgumentType.getString(c, "package")))))
+                .then(Commands.literal("info").then(Commands.argument("package", StringArgumentType.word())
+                    .executes(c -> packageInfo(c.getSource(), StringArgumentType.getString(c, "package")))))
+                .then(Commands.literal("enable").then(Commands.argument("package", StringArgumentType.word())
+                    .executes(c -> setPackageEnabled(c.getSource(), StringArgumentType.getString(c, "package"), true))))
+                .then(Commands.literal("disable").then(Commands.argument("package", StringArgumentType.word())
+                    .executes(c -> setPackageEnabled(c.getSource(), StringArgumentType.getString(c, "package"), false))))
+                .then(Commands.literal("remove").then(Commands.argument("package", StringArgumentType.word())
+                    .executes(c -> removePackage(c.getSource(), StringArgumentType.getString(c, "package")))))));
+    }
+
+    private static int validatePackage(CommandSourceStack source, String packageId) {
+        if (!validId(packageId)) return fail(source, "Invalid package id.");
+        Path root = PACKAGE_DIR.resolve(packageId).toAbsolutePath().normalize();
+        try {
+            Path base = PACKAGE_DIR.toAbsolutePath().normalize();
+            if (!root.startsWith(base)) return fail(source, "Invalid package path.");
+            Path manifestPath = root.resolve("package.json");
+            if (!Files.isRegularFile(manifestPath)) return fail(source, "package.json is missing.");
+            JsonObject manifest = JsonParser.parseString(Files.readString(manifestPath)).getAsJsonObject();
+            String id = manifest.has("id") ? manifest.get("id").getAsString() : "";
+            String entrypoint = manifest.has("entrypoint") ? manifest.get("entrypoint").getAsString() : "";
+            if (!id.equals(packageId)) return fail(source, "Manifest id does not match the package folder.");
+            Path entry = root.resolve(entrypoint).normalize();
+            if (!entry.startsWith(root) || !entrypoint.endsWith(".lua") || !Files.isRegularFile(entry))
+                return fail(source, "Entrypoint is missing or outside the package directory.");
+            if (manifest.has("dependencies") && !manifest.get("dependencies").isJsonArray())
+                return fail(source, "dependencies must be a JSON array.");
+            if (manifest.has("dependencies")) {
+                for (var dependency : manifest.getAsJsonArray("dependencies")) {
+                    String dependencyId = dependency.getAsString();
+                    if (!validId(dependencyId) || !Files.isDirectory(PACKAGE_DIR.resolve(dependencyId)))
+                        return fail(source, "Missing dependency: " + dependencyId);
+                }
+            }
+            send(source, "Package '" + packageId + "' is valid. Entrypoint: " + entrypoint);
+            LuaDeveloperConsole.log("PACKAGE OK: " + packageId);
+            return 1;
+        } catch (Exception e) {
+            return fail(source, "Package validation failed: " + safeMessage(e));
+        }
+    }
+
+    private static int packageInfo(CommandSourceStack source, String packageId) {
+        if (!validId(packageId)) return fail(source, "Invalid package id.");
+        Path root = PACKAGE_DIR.resolve(packageId).normalize();
+        Path manifestPath = root.resolve("package.json");
+        try {
+            if (!Files.isRegularFile(manifestPath)) return fail(source, "Package manifest not found.");
+            JsonObject manifest = JsonParser.parseString(Files.readString(manifestPath)).getAsJsonObject();
+            String name = manifest.has("name") ? manifest.get("name").getAsString() : packageId;
+            String version = manifest.has("version") ? manifest.get("version").getAsString() : "unknown";
+            String entry = manifest.has("entrypoint") ? manifest.get("entrypoint").getAsString() : "not set";
+            boolean enabled = !Files.exists(root.resolve(".disabled"));
+            send(source, name + " [" + packageId + "] v" + version + " | " + (enabled ? "enabled" : "disabled") + " | entry: " + entry);
+            return 1;
+        } catch (Exception e) {
+            return fail(source, "Could not read package: " + safeMessage(e));
+        }
+    }
+
+    private static int setPackageEnabled(CommandSourceStack source, String packageId, boolean enabled) {
+        if (!validId(packageId)) return fail(source, "Invalid package id.");
+        Path root = PACKAGE_DIR.resolve(packageId).normalize();
+        if (!Files.isDirectory(root) || !Files.isRegularFile(root.resolve("package.json")))
+            return fail(source, "Installed package not found.");
+        try {
+            Path marker = root.resolve(".disabled");
+            if (enabled) Files.deleteIfExists(marker);
+            else Files.writeString(marker, "disabled");
+            send(source, "Package '" + packageId + "' " + (enabled ? "enabled" : "disabled") + ". Rejoin the world to apply.");
+            return 1;
+        } catch (IOException e) {
+            return fail(source, "Could not update package state: " + safeMessage(e));
+        }
+    }
+
+    private static int removePackage(CommandSourceStack source, String packageId) {
+        if (!validId(packageId)) return fail(source, "Invalid package id.");
+        Path root = PACKAGE_DIR.resolve(packageId).toAbsolutePath().normalize();
+        try {
+            if (!root.startsWith(PACKAGE_DIR.toAbsolutePath().normalize()) || !Files.isRegularFile(root.resolve("package.json")))
+                return fail(source, "Installed package not found or path rejected.");
+            try (var paths = Files.walk(root)) {
+                for (Path path : paths.sorted(java.util.Comparator.reverseOrder()).toList()) Files.deleteIfExists(path);
+            }
+            send(source, "Package '" + packageId + "' removed.");
+            LuaDeveloperConsole.log("PACKAGE REMOVED: " + packageId);
+            return 1;
+        } catch (IOException e) {
+            return fail(source, "Could not remove package: " + safeMessage(e));
+        }
+    }
+
+    private static void send(CommandSourceStack source, String message) {
+        if (source == null) localMessage(message);
+        else source.sendSuccess(() -> Component.literal("L2M: " + message), false);
+        LuaDeveloperConsole.log(message);
+    }
+
+    private static String safeMessage(Exception error) {
+        return error.getMessage() == null ? error.getClass().getSimpleName() : error.getMessage();
     }
 
     private static int runPackageScript(CommandSourceStack source, String packageId, String scriptName) {
@@ -80,7 +189,7 @@ public final class LuaClientCommands {
             try (var packages = Files.list(PACKAGE_DIR)) {
                 packages.filter(Files::isDirectory).sorted().forEach(directory -> {
                     Path metadata = directory.resolve("package.json");
-                    if (!Files.isRegularFile(metadata)) return;
+                    if (!Files.isRegularFile(metadata) || Files.exists(directory.resolve(".disabled"))) return;
                     try {
                         JsonObject manifest = JsonParser.parseString(Files.readString(metadata)).getAsJsonObject();
                         String packageId = manifest.has("id") ? manifest.get("id").getAsString() : "";
@@ -115,6 +224,12 @@ public final class LuaClientCommands {
             LuaRenderBridge.clear();
             Globals globals = JsePlatform.standardGlobals();
             LuaTable api = new LuaTable();
+            api.set("on", new TwoArgFunction() {
+                @Override public LuaValue call(LuaValue event, LuaValue callback) {
+                    LuaEventBus.subscribe(event.checkjstring(), callback);
+                    return LuaValue.TRUE;
+                }
+            });
             api.set("systemChat", new OneArgFunction() {
                 @Override public LuaValue call(LuaValue value) { localMessage(value.checkjstring()); return LuaValue.NIL; }
             });
@@ -154,12 +269,15 @@ public final class LuaClientCommands {
             });
             globals.set("l2m", api);
             globals.load(Files.readString(normalized), "@" + normalized.getFileName()).call();
+            String success = "Executed " + normalized.getFileName();
+            LuaDeveloperConsole.log("SCRIPT OK: " + normalized.getFileName());
             if (source == null) localMessage("Automatically loaded " + normalized.getFileName());
-            else source.sendSuccess(() -> Component.literal("L2M: executed " + normalized.getFileName()), false);
+            else source.sendSuccess(() -> Component.literal("L2M: " + success), false);
             return 1;
         } catch (IOException | LuaError | IllegalArgumentException e) {
             L2M.LOGGER.error("Lua script failed: {}", script, e);
-            return fail(source, e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage());
+            LuaDeveloperConsole.log("SCRIPT ERROR: " + script.getFileName() + " - " + safeMessage(e));
+            return fail(source, safeMessage(e));
         }
     }
 
