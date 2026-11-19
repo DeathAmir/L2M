@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://mark.sylphx.com/api/v1/mark/hero?type=aurora&theme=ocean&text=L2M%20%E2%80%94%20Lua2Minecraft&desc=Lua%20scripting%20for%20Minecraft%20modding&color=36D6D0&animation=fade" width="100%" alt="L2M animated banner" />
+<a href="https://github.com/DeathAmir/L2M"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=34&duration=2800&pause=900&color=36D6D0&center=true&vCenter=true&multiline=true&repeat=true&width=1000&height=150&lines=L2M+%E2%80%94+Lua2Minecraft;BRING+LUA+INTO+MINECRAFT;SCRIPT.+CREATE.+PLAY." alt="L2M animated banner" /></a>
 
 <br/>
 
