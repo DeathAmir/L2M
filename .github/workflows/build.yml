@@ -40,5 +40,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: L2M-build
-          path: build/libs/L2M-*.jar
+          path: |
+            build/libs/L2M-*.jar
+            build/packages/L2M-packages-*.zip
           if-no-files-found: error
