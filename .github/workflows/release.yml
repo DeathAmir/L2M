@@ -143,16 +143,27 @@ jobs:
           echo "Uploading $(basename "$JAR_PATH") to CurseForge project $CF_PROJECT_ID"
           echo "Metadata: $METADATA"
 
-          RESPONSE="$(curl --silent --show-error --fail-with-body -X POST \
+          RESPONSE_FILE="$(mktemp)"
+          HTTP_STATUS="$(curl --silent --show-error -X POST \
             -H "X-Api-Token: $CF_API_TOKEN" \
-            -F "metadata=$METADATA" \
+            -F "metadata=$METADATA;type=application/json" \
             -F "file=@$JAR_PATH;type=application/java-archive" \
+            -o "$RESPONSE_FILE" -w "%{http_code}" \
             "https://minecraft.curseforge.com/api/projects/$CF_PROJECT_ID/upload-file")"
+          RESPONSE="$(cat "$RESPONSE_FILE")"
+          rm -f "$RESPONSE_FILE"
 
-          echo "CurseForge upload response: $RESPONSE"
+          echo "CurseForge HTTP status: $HTTP_STATUS"
+          echo "CurseForge response: $RESPONSE"
+
+          if [[ "$HTTP_STATUS" -lt 200 || "$HTTP_STATUS" -ge 300 ]]; then
+            echo "CurseForge rejected the upload. Check the response above for the exact reason."
+            exit 1
+          fi
+
           FILE_ID="$(printf '%s' "$RESPONSE" | jq -r '.id // empty')"
           if [[ -z "$FILE_ID" ]]; then
-            echo "CurseForge did not return a file ID."
+            echo "CurseForge returned success but no file ID."
             exit 1
           fi
           echo "CurseForge file uploaded successfully. File ID: $FILE_ID"
