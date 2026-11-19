@@ -50,3 +50,5 @@
 :root[data-theme="dark"] .token.comment,:root[data-theme="light"] .token.comment{color:#42a66d!important;font-style:italic}
 :root[data-theme="dark"] .doc-main a:not(.doc-card):not(.page-foot a){color:#9bb4ff}
 @media(prefers-reduced-motion:no-preference){.theme-toggle,.doc-card,.sidebar{transition:background .18s,color .18s,border-color .18s,transform .18s}}
+
+.resource-list{border:1px solid var(--line);border-radius:9px;overflow:hidden;margin:14px 0 24px}.resource-list a{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:12px 14px;border-bottom:1px solid var(--line);font-size:12px;font-weight:650}.resource-list a:last-child{border-bottom:0}.resource-list a:hover{background:var(--surface2)}.resource-list span{font-size:10px;color:var(--muted);font-weight:400;text-align:right}.doc-main .muted{font-size:11px;color:var(--muted)}:root[data-theme="dark"] .resource-list a{color:#dce5f4}:root[data-theme="dark"] .resource-list a:hover{background:#151f31}
