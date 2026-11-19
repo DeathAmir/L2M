@@ -111,6 +111,8 @@ l2m.log("Block definition saved: " .. tostring(ok))</code></pre></div>
 
 <h2 id="content-inventory">Categories, item definitions and inventory</h2>
 <p>L2M packages can define categories and catalog entries. Item definitions map to an existing Minecraft item so the Give and Equip actions use real Minecraft inventory stacks, shield behavior and armor slots. These definitions do not register brand-new Minecraft item IDs or change vanilla combat attributes yet.</p>
+<div class="signature"><code>l2m.registerBlock(id, properties)</code><span class="tag">Block definition</span></div>
+<p>Stores a block catalog definition with <code>displayName</code>, <code>category</code>, <code>icon</code>, optional <code>texture</code>, <code>description</code>, <code>hardness</code> and <code>requiresTool</code>. Block definitions are metadata in this release; they are not yet registered as placeable Minecraft block IDs.</p>
 <div class="signature"><code>l2m.defineCategory(id, properties)</code><span class="tag">Content definition</span></div>
 <p>Creates a category with <code>displayName</code>, <code>icon</code> (a registered Minecraft item ID), optional <code>description</code> and <code>sortOrder</code>.</p>
 <div class="signature"><code>l2m.registerItem(id, properties)</code><span class="tag">Content definition</span></div>
