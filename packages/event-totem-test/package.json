@@ -1,0 +1,11 @@
+{
+  "id": "event-totem-test",
+  "name": "L2M Event Totem Test",
+  "version": "1.0.0",
+  "entrypoint": "scripts/main.lua",
+  "description": "Gives the local player a Totem of Undying after taking damage to verify player_hurt callbacks.",
+  "minecraft": "1.21.1",
+  "dependencies": [],
+  "assets": "assets",
+  "languages": ["en_us"]
+}
