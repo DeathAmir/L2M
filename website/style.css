@@ -9,3 +9,44 @@
 .codebox code,.codebox pre code{background:transparent!important;color:inherit!important;text-shadow:none!important;font:12px/1.85 ui-monospace,SFMono-Regular,Consolas,monospace}
 .codebox .token.comment{color:#718096}.codebox .token.keyword,.codebox .token.boolean{color:#c792ea}.codebox .token.string{color:#c3e88d}.codebox .token.number{color:#f78c6c}.codebox .token.function{color:#82aaff}.codebox .token.operator,.codebox .token.punctuation{color:#89ddff}.codebox .token.builtin{color:#ffcb6b}
 .copy{background:#202c40;border-color:#34445d;color:#c4cee0}.copy:hover{background:#2a3a54;color:#fff}
+
+.theme-toggle{border:1px solid var(--line);background:var(--surface2);color:var(--text);border-radius:7px;padding:6px 10px;font:11px system-ui;cursor:pointer;white-space:nowrap}.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0b1020;--surface:#111827;--surface2:#151e2e;--line:#263247;--text:#e5eaf3;--muted:#a0aec0;--dim:#78869d;--accent:#8ba7ff;--accent2:#a8bbff;--green:#69d7a5}
+:root[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+:root[data-theme="dark"] .topbar{background:#0b1020ed}
+:root[data-theme="dark"] .brand-icon{background:#e5eaf3;color:#101827}
+:root[data-theme="dark"] .sidebar{background:#0e1524}
+:root[data-theme="dark"] .searchbox{background:#111b2c;border-color:#2b3850}
+:root[data-theme="dark"] .searchbox input{color:var(--text)}
+:root[data-theme="dark"] .nav-item,:root[data-theme="dark"] .nav-group{color:#aab6c9}
+:root[data-theme="dark"] .nav-item:hover,:root[data-theme="dark"] .nav-item.active{background:#1a2946;color:#b7c8ff}
+:root[data-theme="dark"] .nav-group a{color:#9aa9bf;border-color:#2b3850}
+:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3{color:#edf2fa}
+:root[data-theme="dark"] .lead,:root[data-theme="dark"] .doc-main>p,:root[data-theme="dark"] .doc-main ul,:root[data-theme="dark"] .doc-main ol{color:#aab6c9}
+:root[data-theme="dark"] .pill{background:#1b2944;border-color:#344a78;color:#b7c8ff}
+:root[data-theme="dark"] .callout{background:#121e32;border-color:#2c4268}
+:root[data-theme="dark"] .callout b{color:#e1e9f7}
+:root[data-theme="dark"] .callout p{color:#aab6c9}
+:root[data-theme="dark"] .callout-icon{background:#23395e;color:#b7c8ff}
+:root[data-theme="dark"] .doc-card{background:#111827;border-color:#263247}
+:root[data-theme="dark"] .doc-card b{color:#e5eaf3}
+:root[data-theme="dark"] .doc-card p,:root[data-theme="dark"] .api-table span{color:#a0aec0}
+:root[data-theme="dark"] .card-icon{background:#1b2944;color:#a9bcff}
+:root[data-theme="dark"] code{background:#1a2740;color:#b7c8ff}
+:root[data-theme="dark"] .api-table a:hover{background:#151f31}
+:root[data-theme="dark"] .api-table code{color:#a9bcff}
+:root[data-theme="dark"] .api-table b,:root[data-theme="dark"] .tag{background:#142c27;border-color:#285344;color:#7fe0b2}
+:root[data-theme="dark"] .signature{background:#121c2c;border-color:#2a3850}
+:root[data-theme="dark"] .signature code{color:#b7c8ff}
+:root[data-theme="dark"] .param-table th{background:#172235;color:#d3dceb}
+:root[data-theme="dark"] .param-table td{color:#aab6c9}
+:root[data-theme="dark"] .param-table td,:root[data-theme="dark"] .param-table th{border-color:#2a3850}
+:root[data-theme="dark"] .param-table td:first-child code{color:#b7c8ff}
+:root[data-theme="dark"] .toc>a{color:#a0aec0}
+:root[data-theme="dark"] .page-foot{border-color:#263247}
+:root[data-theme="dark"] .codebox{background:#0d1421;border-color:#2a3850}
+:root[data-theme="dark"] .code-head{background:#172235;border-color:#2a3850;color:#aab6c9}
+:root[data-theme="dark"] .copy{background:#202c40;border-color:#34445d;color:#c4cee0}
+:root[data-theme="dark"] .token.comment,:root[data-theme="light"] .token.comment{color:#42a66d!important;font-style:italic}
+:root[data-theme="dark"] .doc-main a:not(.doc-card):not(.page-foot a){color:#9bb4ff}
+@media(prefers-reduced-motion:no-preference){.theme-toggle,.doc-card,.sidebar{transition:background .18s,color .18s,border-color .18s,transform .18s}}
