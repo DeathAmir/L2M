@@ -82,13 +82,23 @@ public final class LuaInventoryScreen extends Screen {
         for (int i = start; i < Math.min(visible.size(), start + 6); i++) {
             JsonObject item = visible.get(i);
             int y = 78 + (i - start) * 34;
-            ResourceLocation resource = ResourceLocation.tryParse(item.get("icon").getAsString());
-            if (resource == null || !BuiltInRegistries.ITEM.containsKey(resource))
-                resource = ResourceLocation.tryParse(item.get("minecraftItem").getAsString());
-            if (resource != null && BuiltInRegistries.ITEM.containsKey(resource)) {
-                ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(resource));
-                graphics.renderItem(stack, 16, y);
-                graphics.renderItemDecorations(font, stack, 16, y);
+            boolean customTexture = false;
+            if (item.has("texture") && !item.get("texture").getAsString().isBlank()) {
+                ResourceLocation texture = ResourceLocation.tryParse(item.get("texture").getAsString());
+                if (texture != null) {
+                    graphics.blit(texture, 16, y, 0, 0, 16, 16, 16, 16);
+                    customTexture = true;
+                }
+            }
+            if (!customTexture) {
+                ResourceLocation resource = ResourceLocation.tryParse(item.get("icon").getAsString());
+                if (resource == null || !BuiltInRegistries.ITEM.containsKey(resource))
+                    resource = ResourceLocation.tryParse(item.get("minecraftItem").getAsString());
+                if (resource != null && BuiltInRegistries.ITEM.containsKey(resource)) {
+                    ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(resource));
+                    graphics.renderItem(stack, 16, y);
+                    graphics.renderItemDecorations(font, stack, 16, y);
+                }
             }
             graphics.drawString(font, item.get("displayName").getAsString(), 42, y + 2, 0xFFFFFF);
             String desc = item.has("description") ? item.get("description").getAsString() : "";
