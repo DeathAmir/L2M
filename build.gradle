@@ -30,7 +30,7 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    archivesName = "L2M"
 }
 
 // Mojang ships Java 21 to end users in 1.21.1, so mods should target Java 21.
@@ -95,7 +95,7 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
-dependencies {
+dependencies {\n    implementation "org.luaj:luaj-jse:3.0.1"
     // Specify the version of Minecraft to use.
     // Depending on the plugin applied there are several options. We will assume you applied the userdev plugin as shown above.
     // The group for userdev is net.neoforged, the module name is neoforge, and the version is the same as the neoforge version.
