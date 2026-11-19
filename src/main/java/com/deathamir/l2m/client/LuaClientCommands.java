@@ -54,6 +54,7 @@ public final class LuaClientCommands {
                     .then(Commands.argument("script", StringArgumentType.word())
                         .executes(c -> runPackageScript(c.getSource(), StringArgumentType.getString(c, "package"), StringArgumentType.getString(c, "script")))))))
             .then(Commands.literal("packages").executes(c -> listPackages(c.getSource())))
+            .then(Commands.literal("inventory").executes(c -> { Minecraft.getInstance().setScreen(new LuaInventoryScreen("")); return 1; }))
             .then(Commands.literal("console").executes(c -> {
                 Minecraft.getInstance().setScreen(new LuaDeveloperConsole());
                 return 1;
@@ -246,7 +247,13 @@ public final class LuaClientCommands {
             });
             api.set("registerItem", new TwoArgFunction() {
                 @Override public LuaValue call(LuaValue name, LuaValue properties) {
-                    writeDefinition("items", normalized, name.checkjstring(), properties.checktable());
+                    LuaContentApi.save("items", name.checkjstring(), properties.checktable(), normalized.getFileName().toString());
+                    return LuaValue.TRUE;
+                }
+            });
+            api.set("defineCategory", new TwoArgFunction() {
+                @Override public LuaValue call(LuaValue name, LuaValue properties) {
+                    LuaContentApi.save("categories", name.checkjstring(), properties.checktable(), normalized.getFileName().toString());
                     return LuaValue.TRUE;
                 }
             });
@@ -282,6 +289,7 @@ public final class LuaClientCommands {
                 }
             });
             LuaWorldApi.install(api);
+            LuaContentApi.install(api);
             globals.set("l2m", api);
             globals.load(Files.readString(normalized), "@" + normalized.getFileName()).call();
             String success = "Executed " + normalized.getFileName();
