@@ -17,13 +17,24 @@ public final class LuaEventBus {
         "player_join",
         "player_leave",
         "player_hurt",
-        "player_eat"
+        "player_death",
+        "player_respawn",
+        "player_attack",
+        "player_eat",
+        "item_use_start",
+        "block_break",
+        "block_place",
+        "entity_spawn"
     );
 
     private LuaEventBus() {}
 
     public static boolean isSupported(String name) {
         return EVENT_NAMES.contains(name);
+    }
+
+    public static List<String> supportedEvents() {
+        return EVENT_NAMES;
     }
 
     public static void subscribe(String name, LuaValue callback) {
