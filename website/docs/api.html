@@ -1,6 +1,47 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>API Reference · L2M</title><link rel="stylesheet" href="../style.css"></head>
-<body><header class="top"><a class="brand" href="../">L2M</a><nav><a href="./">Documentation</a><a href="examples.html">Examples</a><a href="api.html">API</a><a href="https://github.com/DeathAmir/L2M">GitHub</a></nav></header>
-<main><section class="hero"><span class="eyebrow">API REFERENCE · PREVIEW</span><h1>Lua API<br><em>v0.1</em></h1><p>The initial L2M client API is intentionally small.</p></section>
-<section class="section"><h2><code>l2m.chat(message)</code></h2><p>Sends a chat message using the local Minecraft client connection.</p><ul><li><strong>message</strong> — string, not empty, maximum 256 characters.</li><li><strong>Returns</strong> — no Lua value.</li><li><strong>Requires</strong> — the player must be in a world with an active connection.</li></ul><pre><code>l2m.chat("Hello from Lua!")</code></pre></section>
-<section class="section"><h2>Runtime</h2><p>L2M bundles LuaJ 3.0.1 inside the mod JAR using NeoForge Jar-in-Jar. LuaJ provides a Lua 5.1-compatible scripting environment; this is not the native Lua C library.</p><p>Scripts run locally on the client. Treat scripts as trusted code and do not install scripts from unknown sources.</p></section></main><footer><a href="./">Back to documentation</a> · <a href="https://github.com/DeathAmir/L2M">GitHub</a></footer></body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Current Lua API reference for L2M."><title>API Reference · L2M</title><link rel="stylesheet" href="../style.css"></head>
+<body><header class="top"><a class="brand" href="../"><span class="brand-mark">L</span><span>L2M</span></a><nav><a href="./">Docs</a><a href="examples.html">Examples</a><a href="api.html">API Reference</a><a class="nav-cta" href="https://github.com/DeathAmir/L2M">GitHub ↗</a></nav></header>
+<main><section class="hero wrap"><div class="hero-copy"><span class="eyebrow">DEVELOPER REFERENCE · CURRENT BUILD</span><h1>Lua API<br><em>Reference.</em></h1><p>Every Lua function currently exposed by L2M, plus the client commands and package format available in the repository.</p><div class="actions"><a class="button" href="../">Back home ←</a><a class="text-link" href="examples.html">See examples →</a></div></div><div class="hero-card"><div class="window"><div class="window-head"><span></span><span></span><span></span><small>API overview</small></div><pre><code><span class="code-purple">l2m</span>.chat(message)
+<span class="code-purple">l2m</span>.log(message)
+<span class="code-purple">l2m</span>.drawText(x, y, text, color)
+<span class="code-purple">l2m</span>.drawRect(x, y, w, h, color)
+<span class="code-purple">l2m</span>.registerBlock(id, properties)
+<span class="code-purple">l2m</span>.registerItem(id, properties)
+<span class="code-purple">l2m</span>.clearDraw()</code></pre></div><div class="glow"></div></div></section>
+<section class="section wrap"><div class="section-head"><div><span class="eyebrow">FUNCTION CATALOG</span><h2>Lua functions</h2></div></div><div class="accordion">
+<details id="chat" open><summary><span><b>Chat messages</b><small>chat · clientChat · systemChat</small></span><i>＋</i></summary><div class="detail-body"><p>All three names are aliases of the same function. They add a local message to the Minecraft chat UI; they do not send a server chat packet.</p><pre><code>l2m.chat("Hello from Lua!")
+l2m.clientChat("Hello again")
+l2m.systemChat("Local message")</code></pre><ul><li><b>Signature:</b> <code>l2m.chat(message)</code></li><li><b>Argument:</b> string, 1–256 characters; blank messages are rejected.</li><li><b>Returns:</b> no useful Lua value (<code>nil</code>).</li><li><b>Requires:</b> Minecraft chat UI to be available.</li></ul></div></details>
+<details id="logging"><summary><span><b>Logging</b><small>log</small></span><i>＋</i></summary><div class="detail-body"><p>Writes a message to the L2M logger with the <code>[Lua]</code> prefix.</p><pre><code>l2m.log("Script started")</code></pre><ul><li><b>Signature:</b> <code>l2m.log(value)</code></li><li><b>Argument:</b> any Lua value; converted to text.</li><li><b>Returns:</b> no Lua value.</li></ul></div></details>
+<details id="drawing"><summary><span><b>HUD drawing</b><small>drawText · drawRect · clearDraw</small></span><i>＋</i></summary><div class="detail-body"><p>Queues simple drawing calls for the client GUI render event. Coordinates are GUI screen coordinates.</p><pre><code>l2m.drawText(12, 12, "L2M is active")
+l2m.drawText(12, 30, "Custom color", 0xFF50E0D2)
+l2m.drawRect(10, 52, 140, 3, 0xFF50E0D2)
+l2m.clearDraw()</code></pre><ul><li><b><code>l2m.drawText(x, y, text, color?)</code></b> — x/y are integers, text is a string (maximum 512 characters), color is an integer and defaults to <code>0xFFFFFFFF</code>.</li><li><b><code>l2m.drawRect(x, y, width, height, color)</code></b> — integer coordinates and dimensions; width/height must be 0–4096; color is an integer.</li><li><b><code>l2m.clearDraw()</code></b> — removes all queued drawing calls.</li><li>Drawing remains queued until cleared or another script execution clears the bridge.</li></ul></div></details>
+<details id="content"><summary><span><b>Generated content definitions</b><small>registerBlock · registerItem</small></span><i>＋</i></summary><div class="detail-body"><p>These functions save JSON definitions under <code>config/l2m/generated</code>. The current implementation loads definitions during mod initialization, before registry freeze. Restart Minecraft after creating or changing a definition.</p><pre><code>l2m.registerBlock("ruby_ore", {
+  displayName = "Ruby Ore",
+  hardness = 3.0,
+  requiresTool = true
+})
+
+l2m.registerItem("ruby", {
+  displayName = "Ruby",
+  stackSize = 16
+})</code></pre><p><b><code>l2m.registerBlock(id, properties)</code></b></p><ul><li><code>id</code>: lowercase letters, numbers and underscores; 1–48 characters.</li><li><code>displayName</code>: optional string stored in the definition (default is the id).</li><li><code>hardness</code>: optional number (default <code>1.5</code>).</li><li><code>requiresTool</code>: optional boolean (default <code>false</code>).</li></ul><p><b><code>l2m.registerItem(id, properties)</code></b></p><ul><li><code>id</code>: same ID rules as blocks.</li><li><code>displayName</code>: optional string stored in the definition (default is the id).</li><li><code>stackSize</code>: optional integer (default <code>64</code>, accepted range 1–99).</li></ul><p>Both functions return <code>true</code> after writing the definition. The current registration code creates basic blocks and items; custom models, textures, recipes and runtime registry changes are not provided by these methods.</p></div></details>
+</div></section>
+<section id="commands" class="section wrap"><div class="section-head"><div><span class="eyebrow">IN-GAME INTERFACE</span><h2>Client commands</h2></div></div><div class="accordion">
+<details open><summary><span><b>/l2m run &lt;file&gt;</b><small>Run a standalone script</small></span><i>＋</i></summary><div class="detail-body"><p>Executes <code>config/l2m/scripts/&lt;file&gt;.lua</code>. Use the filename without the extension.</p><pre><code>/l2m run hello</code></pre></div></details>
+<details><summary><span><b>/l2m package run &lt;package&gt; &lt;script&gt;</b><small>Run a script from an installed package</small></span><i>＋</i></summary><div class="detail-body"><p>Executes <code>config/l2m/packages/&lt;package&gt;/scripts/&lt;script&gt;.lua</code>.</p></div></details>
+<details><summary><span><b>/l2m packages</b><small>List package directories</small></span><i>＋</i></summary><div class="detail-body"><p>Lists directory names found in <code>config/l2m/packages</code>.</p></div></details>
+</div></section>
+<section id="packages" class="section wrap"><div class="section-head"><div><span class="eyebrow">PACKAGE FORMAT</span><h2>Auto-run packages</h2></div></div><p class="muted">When the player joins a world, L2M scans package folders for a <code>package.json</code>. A valid entrypoint is executed automatically.</p><pre><code>config/
+└── l2m/
+    └── packages/
+        └── my_package/
+            ├── package.json
+            └── scripts/
+                └── main.lua</code></pre><pre><code>{
+  "id": "my_package",
+  "entrypoint": "scripts/main.lua"
+}</code></pre><p>The manifest ID must match the package folder. The entrypoint must be a relative Lua path inside that package folder.</p></section>
+<section class="notice wrap"><div><span class="eyebrow">IMPORTANT</span><h2>Experimental client API</h2><p>L2M currently runs scripts locally using LuaJ 3.0.1 and a Lua 5.1-compatible environment. The implementation loads LuaJ standard globals; scripts should be treated as trusted code. Timer/event APIs, server-side execution, and live registry edits are not part of the current public API.</p></div><a class="button" href="https://github.com/DeathAmir/L2M">View source ↗</a></section>
+</main><footer class="footer wrap"><a class="brand" href="../"><span class="brand-mark">L</span><span>L2M</span></a><span>API reference · Current repository implementation</span><a href="https://github.com/DeathAmir/L2M">GitHub ↗</a></footer></body></html>

@@ -1,8 +1,30 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Examples · L2M</title><link rel="stylesheet" href="../style.css"></head>
-<body><header class="top"><a class="brand" href="../">L2M</a><nav><a href="./">Documentation</a><a href="examples.html">Examples</a><a href="api.html">API</a><a href="https://github.com/DeathAmir/L2M">GitHub</a></nav></header>
-<main><section class="hero"><span class="eyebrow">LUA RECIPES</span><h1>Small scripts.<br><em>Real game chat.</em></h1><p>Copy a sample into <code>config/l2m/scripts</code> and run it with <code>/l2m run filename</code>.</p></section>
-<section class="section"><h2>Hello message</h2><pre><code>l2m.chat("Hello, Minecraft!")</code></pre><p>Save as <code>hello.lua</code>, then run <code>/l2m run hello</code>.</p></section>
-<section class="section"><h2>Multiple messages</h2><pre><code>l2m.chat("L2M is loaded!")
-l2m.chat("This message was sent by Lua.")</code></pre><p>Each call sends one normal client chat message. Server chat rules still apply.</p></section>
-<section class="section"><h2>API availability</h2><p>At this preview stage, <code>l2m.chat(message)</code> is the only public Lua function. Timers, event hooks, server-side scripts, and world-editing APIs are not available yet.</p></section></main><footer><a href="./">Back to documentation</a> · <a href="https://github.com/DeathAmir/L2M">GitHub</a></footer></body></html>
+<body><header class="top"><a class="brand" href="../"><span class="brand-mark">L</span><span>L2M</span></a><nav><a href="./">Docs</a><a href="examples.html">Examples</a><a href="api.html">API Reference</a><a class="nav-cta" href="https://github.com/DeathAmir/L2M">GitHub ↗</a></nav></header>
+<main><section class="hero wrap"><div class="hero-copy"><span class="eyebrow">LUA RECIPES · CURRENT API</span><h1>Learn by<br><em>example.</em></h1><p>Copy a snippet into a Lua file under <code>config/l2m/scripts</code>, then run it in-game with <code>/l2m run filename</code>.</p><div class="actions"><a class="button" href="api.html">API reference →</a><a class="text-link" href="../">Home</a></div></div><div class="hero-card"><div class="window"><div class="window-head"><span></span><span></span><span></span><small>examples.lua</small></div><pre><code><span class="code-purple">l2m</span>.chat(<span class="code-green">"Hello!"</span>)
+<span class="code-purple">l2m</span>.drawText(<span class="code-orange">12</span>, <span class="code-orange">12</span>,
+  <span class="code-green">"Welcome"</span>)</code></pre></div><div class="glow"></div></div></section>
+<section class="section wrap"><div class="section-head"><div><span class="eyebrow">01 · CHAT & LOG</span><h2>Messages and logs</h2></div></div><div class="accordion"><details open><summary><span><b>Local chat message</b><small>chat aliases</small></span><i>＋</i></summary><div class="detail-body"><pre><code>l2m.chat("Hello, Minecraft!")
+l2m.clientChat("This is local chat.")
+l2m.systemChat("L2M says hi!")</code></pre><p>These aliases add text to the local chat UI; they do not send a message to the server.</p></div></details><details><summary><span><b>Write to the log</b><small>log</small></span><i>＋</i></summary><div class="detail-body"><pre><code>l2m.log("Script started")
+l2m.log("Player script loaded")</code></pre></div></details></div></section>
+<section class="section wrap"><div class="section-head"><div><span class="eyebrow">02 · GUI DRAWING</span><h2>Draw simple HUD elements</h2></div></div><pre><code>l2m.drawText(12, 12, "L2M is running", 0xFFFFFFFF)
+l2m.drawRect(10, 34, 150, 4, 0xFF50E0D2)
+
+-- Remove all queued drawing calls
+l2m.clearDraw()</code></pre><p class="muted">Text and rectangles are drawn by the client GUI render event. Coordinates are screen GUI coordinates.</p></section>
+<section class="section wrap"><div class="section-head"><div><span class="eyebrow">03 · GENERATED CONTENT</span><h2>Define items and blocks</h2></div></div><div class="accordion"><details open><summary><span><b>Create a block definition</b><small>registerBlock</small></span><i>＋</i></summary><div class="detail-body"><pre><code>l2m.registerBlock("copper_crystal", {
+  displayName = "Copper Crystal",
+  hardness = 2.5,
+  requiresTool = true
+})</code></pre></div></details><details><summary><span><b>Create an item definition</b><small>registerItem</small></span><i>＋</i></summary><div class="detail-body"><pre><code>l2m.registerItem("copper_fragment", {
+  displayName = "Copper Fragment",
+  stackSize = 32
+})</code></pre></div></details></div><p class="note">Definitions are saved under <code>config/l2m/generated</code> and loaded during Minecraft startup. Restart the game after creating them. These methods do not create custom textures, models or recipes.</p></section>
+<section class="section wrap"><div class="section-head"><div><span class="eyebrow">04 · PACKAGES</span><h2>Run a package script</h2></div></div><pre><code>/l2m package run my_package main
+/l2m packages</code></pre><p>To auto-run a package when joining a world, add a <code>package.json</code> manifest:</p><pre><code>{
+  "id": "my_package",
+  "entrypoint": "scripts/main.lua"
+}</code></pre></section>
+<section class="notice wrap"><div><span class="eyebrow">API LIMITS</span><h2>Know what's implemented.</h2><p>Timers, event hooks, server-side scripts, world editing and dynamic registry updates are not exposed by the current public API. See the reference for exact signatures and constraints.</p></div><a class="button" href="api.html">Full API ↗</a></section></main>
+<footer class="footer wrap"><a class="brand" href="../"><span class="brand-mark">L</span><span>L2M</span></a><span>Examples for the current API</span><a href="https://github.com/DeathAmir/L2M">GitHub ↗</a></footer></body></html>
