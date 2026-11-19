@@ -174,3 +174,4 @@ idea {
         downloadJavadoc = true
     }
 }
+\n\ntasks.named("assemble") {\n    dependsOn("jarJar")\n}\n
