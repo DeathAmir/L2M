@@ -108,7 +108,7 @@ jobs:
           project_id: ${{ secrets.CURSEFORGE_PROJECT_ID }}
           game_endpoint: minecraft
           file_path: ${{ steps.jar.outputs.path }}
-          game_versions: "Minecraft 1.21.1,NeoForge,Environment:Client,Environment:Server"
+          game_versions: "77784:11779,68441:10150,75208:9638,75208:9639"
           release_type: ${{ inputs.release_type }}
           display_name: "L2M v${{ inputs.version }}"
           changelog: ${{ inputs.release_notes }}
