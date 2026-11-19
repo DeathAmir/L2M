@@ -92,6 +92,10 @@ public final class LuaPackagePreloader {
         api.set("drawText", ignored);
         api.set("drawRect", ignored);
         api.set("clearDraw", ignored);
+        api.set("openInventory", ignored);
+        api.set("giveCustomItem", ignored);
+        api.set("equipItem", ignored);
+        api.set("listCategories", ignored);
         globals.set("l2m", api);
         try {
             globals.load(Files.readString(script), "@" + script.getFileName()).call();
