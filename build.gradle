@@ -70,6 +70,7 @@ dependencies {
             prefer '3.0.1'
         }
     }
+    additionalRuntimeClasspath "org.luaj:luaj-jse:3.0.1"
 }
 
 tasks.withType(ProcessResources).configureEach {
