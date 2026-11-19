@@ -317,3 +317,31 @@ code,kbd,pre,.codebox pre,.codebox code,.code-head span,.signature code,.api-tab
 .landing .directory-grid span{font:11px Arial,sans-serif;color:#49647b}
 .landing .directory-grid svg{position:absolute;right:15px;top:20px;width:17px;color:#397eaa}
 @media(max-width:700px){.landing .directory-grid{grid-template-columns:1fr}.landing .directory-grid a,.landing .directory-grid a:nth-child(3n),.landing .directory-grid a:nth-last-child(-n+3){border-right:0;border-bottom:1px solid #c7d9e5}.landing .directory-grid a:last-child{border-bottom:0}}
+
+
+/* Wiki header navigation contrast */
+.topbar .top-links a,
+.topbar .top-links a:visited{
+  color:#fff!important;
+  background:transparent!important;
+  border:1px solid transparent!important;
+}
+.topbar .top-links a:hover,
+.topbar .top-links a:focus-visible{
+  color:#fff!important;
+  background:#064879!important;
+  border-color:#8ab8d5!important;
+  text-decoration:none!important;
+}
+.topbar .top-links a.download,
+.topbar .top-links a.download:visited{
+  color:#075b9a!important;
+  background:#fff!important;
+  border:1px solid #fff!important;
+}
+.topbar .top-links a.download:hover,
+.topbar .top-links a.download:focus-visible{
+  color:#003e70!important;
+  background:#eaf4fb!important;
+  border-color:#eaf4fb!important;
+}
