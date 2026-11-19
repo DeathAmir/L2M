@@ -17,3 +17,11 @@ l2m.drawRect(12, 12, 190, 46, 0xCC17152B)
 l2m.drawRect(12, 12, 3, 46, 0xFF9B5CFF)
 l2m.drawText(24, 20, "Lua2Minecraft HUD", 0xFFFFFFFF)
 l2m.drawText(24, 36, "Hello World package is running", 0xFFBFA8FF)
+
+l2m.on("player_join", function(playerName)
+    l2m.systemChat("Hello, " .. playerName .. "! The Hello World package is active.")
+end)
+
+l2m.on("player_leave", function(playerName)
+    l2m.log(playerName .. " left the world")
+end)
