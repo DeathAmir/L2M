@@ -74,6 +74,35 @@ public final class LuaClientCommands {
         }
     }
 
+    public static void runAutoPackages() {
+        try {
+            Files.createDirectories(PACKAGE_DIR);
+            try (var packages = Files.list(PACKAGE_DIR)) {
+                packages.filter(Files::isDirectory).sorted().forEach(directory -> {
+                    Path metadata = directory.resolve("package.json");
+                    if (!Files.isRegularFile(metadata)) return;
+                    try {
+                        JsonObject manifest = JsonParser.parseString(Files.readString(metadata)).getAsJsonObject();
+                        String packageId = manifest.has("id") ? manifest.get("id").getAsString() : "";
+                        String entrypoint = manifest.has("entrypoint") ? manifest.get("entrypoint").getAsString() : "";
+                        if (!validId(packageId) || !directory.getFileName().toString().equals(packageId))
+                            throw new IllegalArgumentException("Package id does not match its folder.");
+                        Path packageRoot = directory.toAbsolutePath().normalize();
+                        Path script = packageRoot.resolve(entrypoint).normalize();
+                        if (!script.startsWith(packageRoot) || !entrypoint.endsWith(".lua"))
+                            throw new IllegalArgumentException("Invalid package entrypoint.");
+                        if (Files.isRegularFile(script)) runScript(null, script);
+                        else L2M.LOGGER.warn("L2M package {} has no entrypoint at {}", packageId, entrypoint);
+                    } catch (Exception e) {
+                        L2M.LOGGER.error("Could not auto-run L2M package {}", directory.getFileName(), e);
+                    }
+                });
+            }
+        } catch (IOException e) {
+            L2M.LOGGER.error("Could not scan L2M packages", e);
+        }
+    }
+
     private static int runScript(CommandSourceStack source, Path script) {
         try {
             Files.createDirectories(SCRIPT_DIR);
