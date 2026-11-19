@@ -2,12 +2,13 @@
   "itemGroup.l2m": "Lua2Minecraft Tab",
   "block.l2m.example_block": "L2M Example Block",
   "item.l2m.example_item": "L2M Example Item",
-
   "l2m.configuration.title": "Lua2Minecraft Configs",
   "l2m.configuration.section.l2m.common.toml": "Lua2Minecraft Configs",
   "l2m.configuration.section.l2m.common.toml.title": "Lua2Minecraft Configs",
   "l2m.configuration.items": "Item List",
   "l2m.configuration.logDirtBlock": "Log Dirt Block",
   "l2m.configuration.magicNumberIntroduction": "Magic Number Text",
-  "l2m.configuration.magicNumber": "Magic Number"
+  "l2m.configuration.magicNumber": "Magic Number",
+  "item.l2m.ruby": "Ruby",
+  "block.l2m.ruby_ore": "Ruby Ore"
 }
