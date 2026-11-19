@@ -92,7 +92,7 @@ l2m.log("Block definition saved: " .. tostring(ok))</code></pre></div>
     stackSize = 16
 })</code></pre></div>
 <table class="param-table"><tr><th>Argument / property</th><th>Type</th><th>Details</th></tr><tr><td><code>id</code></td><td>string</td><td>1–48 characters. Lowercase letters, numbers and underscores.</td></tr><tr><td><code>properties.displayName</code></td><td>string</td><td>Saved in the JSON file, but not yet used for the item's visible name.</td></tr><tr><td><code>properties.stackSize</code></td><td>integer</td><td>Stack limit from 1 to 99. Defaults to <code>64</code>.</td></tr></table>
-<p><b>Returns:</b> <code>true</code> when the definition is saved. A stack size outside 1–99 or an invalid ID raises a Lua error.</p>
+<p><b>Returns:</b> <code>true</code> when the definition is saved. The current manual-script writer saves the supplied stack size without checking its range. The registry loader accepts 1–99; an invalid value is reported in the Minecraft log during startup. Package preload checks this range before saving.</p>
 
 <h2 id="commands">Commands</h2>
 <p>Enter these commands in Minecraft's chat. They run scripts on your client.</p>
