@@ -109,17 +109,38 @@ l2m.log("Block definition saved: " .. tostring(ok))</code></pre></div>
 <p>At startup, L2M runs the entrypoint once in a registration pass. In that pass, only <code>registerBlock</code> and <code>registerItem</code> do anything; chat, log and drawing calls are ignored. Later, when you join a world, L2M runs the entrypoint again as a normal client script.</p>
 <p>Keep registration calls at the top level of the entrypoint. The package entrypoint must be a valid <code>.lua</code> file inside its package folder.</p>
 
-<h2 id="events">Client event subscriptions</h2><p><code>l2m.on(eventName, callback)</code> subscribes the current Lua runtime to a supported client event. Callback errors are logged and do not stop other listeners.</p><div class="signature"><code>l2m.on(eventName, callback)</code><span class="tag">Client</span></div><div class="codebox"><div class="code-head"><span>events.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.on("player_hurt", function(amount, damageType, health)
+<h2 id="events">Client event subscriptions</h2>
+<p><code>l2m.on(eventName, callback)</code> subscribes the current Lua runtime to one of the events listed below. Events are delivered to the client Lua runtime. Callback errors are logged and do not stop other listeners.</p>
+<div class="signature"><code>l2m.on(eventName, callback)</code><span class="tag">Client</span></div>
+<div class="codebox"><div class="code-head"><span>events.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.on("player_hurt", function(amount, damageType, health)
     l2m.log("Damage: " .. tostring(amount) .. " from " .. damageType)
 end)
 
-l2m.on("player_eat", function(itemId, count)
-    l2m.log("Ate " .. itemId)
+l2m.on("player_death", function(damageType)
+    l2m.log("Died from " .. damageType)
 end)
 
-l2m.on("player_join", function(playerName)
-    l2m.log(playerName .. " joined the world")
-end)</code></pre></div><table class="param-table"><tr><th>Event</th><th>Arguments</th><th>When it fires</th></tr><tr><td><code>client_tick</code></td><td>none</td><td>Once per client tick while in a world.</td></tr><tr><td><code>player_join</code></td><td><code>playerName: string</code></td><td>When the local client joins a world.</td></tr><tr><td><code>player_leave</code></td><td><code>playerName: string</code></td><td>When the local client leaves a world.</td></tr><tr><td><code>player_hurt</code></td><td><code>amount, damageType, health: number, string, number</code></td><td>After the local player takes damage.</td></tr><tr><td><code>player_eat</code></td><td><code>itemId, count: string, number</code></td><td>After the local player finishes eating a food item.</td></tr></table><h2 id="giveitem">Giving an item</h2><p><code>l2m.giveItem(itemId, count)</code> requests the vanilla <code>/give @s</code> command through the active connection. It requires permission to use <code>/give</code> on the current world or server.</p><div class="signature"><code>l2m.giveItem(itemId, count)</code><span class="tag">Client command</span></div><div class="codebox"><div class="code-head"><span>main.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.giveItem("minecraft:totem_of_undying", 1)</code></pre></div><p><code>itemId</code> must be a registered Minecraft item ID and <code>count</code> must be between 1 and 64. The function returns <code>true</code> when the command is sent; the server may reject it if you lack permission.</p><p>Listeners are cleared when leaving the world. Package entrypoints register their listeners during normal client execution after joining a world.</p>
+l2m.on("block_break", function(blockId, x, y, z)
+    l2m.log("Broke " .. blockId .. " at " .. x .. ", " .. y .. ", " .. z)
+end)
+
+l2m.on("entity_spawn", function(entityType, uuid, x, y, z)
+    l2m.log(entityType .. " spawned")
+end)</code></pre></div>
+<table class="param-table"><tr><th>Event</th><th>Arguments</th><th>When it fires</th></tr>
+<tr><td><code>client_tick</code></td><td><code>none</code></td><td>Once per client tick while in a world. Keep handlers lightweight.</td></tr>
+<tr><td><code>player_join</code></td><td><code>playerName: string</code></td><td>When the local client joins a world.</td></tr>
+<tr><td><code>player_leave</code></td><td><code>playerName: string</code></td><td>When the local client leaves a world.</td></tr>
+<tr><td><code>player_hurt</code></td><td><code>amount: number, damageType: string, health: number</code></td><td>After the local player takes damage.</td></tr>
+<tr><td><code>player_death</code></td><td><code>damageType: string</code></td><td>When the local player dies.</td></tr>
+<tr><td><code>player_respawn</code></td><td><code>health: number</code></td><td>When the local player respawns.</td></tr>
+<tr><td><code>player_attack</code></td><td><code>targetType: string, targetUuid: string</code></td><td>When the local player attacks an entity.</td></tr>
+<tr><td><code>player_eat</code></td><td><code>itemId: string, count: number</code></td><td>When the local player finishes consuming a food item.</td></tr>
+<tr><td><code>item_use_start</code></td><td><code>itemId: string, count: number</code></td><td>When the local player starts using an item.</td></tr>
+<tr><td><code>block_break</code></td><td><code>blockId: string, x: number, y: number, z: number</code></td><td>When the local player breaks a block.</td></tr>
+<tr><td><code>block_place</code></td><td><code>blockId: string, x: number, y: number, z: number</code></td><td>When the local player places a block.</td></tr>
+<tr><td><code>entity_spawn</code></td><td><code>entityType: string, uuid: string, x: number, y: number, z: number</code></td><td>When a non-player entity joins a loaded level.</td></tr></table>
+<p>Event callbacks currently receive primitive Lua values, not a mutable event object. These notifications are observational; the current API does not expose event cancellation. Events that originate on the logical server are supported in singleplayer/integrated worlds. Receiving server-originated events on a remote multiplayer server requires a server-side L2M bridge.</p><h2 id="giveitem">Giving an item</h2><p><code>l2m.giveItem(itemId, count)</code> requests the vanilla <code>/give @s</code> command through the active connection. It requires permission to use <code>/give</code> on the current world or server.</p><div class="signature"><code>l2m.giveItem(itemId, count)</code><span class="tag">Client command</span></div><div class="codebox"><div class="code-head"><span>main.lua</span><button class="copy">Copy</button></div><pre><code class="language-lua">l2m.giveItem("minecraft:totem_of_undying", 1)</code></pre></div><p><code>itemId</code> must be a registered Minecraft item ID and <code>count</code> must be between 1 and 64. The function returns <code>true</code> when the command is sent; the server may reject it if you lack permission.</p><p>Listeners are cleared when leaving the world. Package entrypoints register their listeners during normal client execution after joining a world.</p>
 
 <div class="page-foot"><span>Lua API provided by the current L2M source.</span><a href="https://github.com/DeathAmir/L2M">Browse source ↗</a></div>
 </main>
