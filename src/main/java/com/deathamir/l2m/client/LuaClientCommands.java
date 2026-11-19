@@ -281,6 +281,7 @@ public final class LuaClientCommands {
                     return LuaValue.TRUE;
                 }
             });
+            LuaWorldApi.install(api);
             globals.set("l2m", api);
             globals.load(Files.readString(normalized), "@" + normalized.getFileName()).call();
             String success = "Executed " + normalized.getFileName();
