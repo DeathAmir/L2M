@@ -35,12 +35,12 @@ public final class L2M {
         loadGeneratedContent();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
-        TABS.register(modEventBus);
         TABS.register("main", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.l2m"))
             .icon(() -> new ItemStack(Items.AMETHYST_SHARD))
             .displayItems((parameters, output) -> ITEMS.getEntries().forEach(entry -> output.accept(entry.get())))
             .build());
+        TABS.register(modEventBus);
         LOGGER.info("Lua2Minecraft initialized. Generated content discovered before registry freeze.");
     }
 
