@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<a href="https://github.com/DeathAmir/L2M"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=34&duration=2800&pause=900&color=36D6D0&center=true&vCenter=true&multiline=true&repeat=true&width=1000&height=150&lines=L2M+%E2%80%94+Lua2Minecraft;BRING+LUA+INTO+MINECRAFT;SCRIPT.+CREATE.+PLAY." alt="L2M animated banner" /></a>
+<a href="https://github.com/DeathAmir/L2M"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:171A35,50:273B70,100:36D6D0&height=220&section=header&text=L2M%20%E2%80%94%20Lua2Minecraft&fontSize=42&fontColor=FFFFFF&fontAlignY=38&desc=BRING%20LUA%20INTO%20MINECRAFT&descAlignY=58&descSize=17" alt="L2M banner" /></a>
 
 <br/>
 
