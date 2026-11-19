@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
 
 import com.deathamir.l2m.L2M;
@@ -34,7 +33,7 @@ public final class LuaEventBus {
         for (LuaValue listener : listeners) {
             try {
                 listener.invoke(LuaValue.varargsOf(args));
-            } catch (LuaError | RuntimeException error) {
+            } catch (RuntimeException error) {
                 L2M.LOGGER.error("L2M event '{}' callback failed", name, error);
                 LuaDeveloperConsole.log("EVENT ERROR [" + name + "]: " + error.getMessage());
             }
