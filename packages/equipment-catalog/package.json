@@ -1,0 +1,7 @@
+{
+  "id": "equipment-catalog",
+  "name": "Equipment Catalog Demo",
+  "version": "1.0.0",
+  "entrypoint": "scripts/main.lua",
+  "description": "Demonstrates item categories, item icons, shields, armor slots and the L2M inventory screen."
+}
