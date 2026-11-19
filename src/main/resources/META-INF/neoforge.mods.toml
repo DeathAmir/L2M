@@ -36,6 +36,7 @@ displayName="${mod_name}" #mandatory
 displayURL="https://deathamir.github.io/L2M/"
 
 # A file name (in the root of the mod JAR) containing a logo for display
+logoFile="l2m.png"
 
 
 # A text field displayed in the mod UI
