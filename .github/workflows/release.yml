@@ -102,68 +102,14 @@ jobs:
 
       - name: Upload to CurseForge
         if: ${{ inputs.publish_curseforge }}
-        shell: bash
-        env:
-          CF_API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
-          CF_PROJECT_ID: ${{ secrets.CURSEFORGE_PROJECT_ID }}
-          RELEASE_VERSION: ${{ inputs.version }}
-          RELEASE_NOTES: ${{ inputs.release_notes }}
-          RELEASE_TYPE: ${{ inputs.release_type }}
-          JAR_PATH: ${{ steps.jar.outputs.path }}
-        run: |
-          if [[ -z "$CF_API_TOKEN" || -z "$CF_PROJECT_ID" ]]; then
-            echo "Missing CURSEFORGE_API_TOKEN or CURSEFORGE_PROJECT_ID secret."
-            exit 1
-          fi
-
-          GAME_VERSIONS="$(curl -fsSL \
-            -H "X-Api-Token: $CF_API_TOKEN" \
-            "https://minecraft.curseforge.com/api/game/versions")"
-
-          MC_VERSION_ID="$(printf '%s' "$GAME_VERSIONS" | jq -r '[.[] | select(.name == "1.21.1")][0].id // empty')"
-          if [[ -z "$MC_VERSION_ID" ]]; then
-            echo "Could not find Minecraft 1.21.1 in CurseForge game versions."
-            exit 1
-          fi
-
-          METADATA="$(jq -n \
-            --arg changelog "$RELEASE_NOTES" \
-            --arg displayName "L2M v$RELEASE_VERSION" \
-            --arg releaseType "$RELEASE_TYPE" \
-            --argjson mcVersion "$MC_VERSION_ID" \
-            --argjson neoForgeVersion 10150 \
-            '{
-              changelog: $changelog,
-              changelogType: "markdown",
-              displayName: $displayName,
-              gameVersions: [$mcVersion, $neoForgeVersion],
-              releaseType: $releaseType
-            }')"
-
-          echo "Uploading $(basename "$JAR_PATH") to CurseForge project $CF_PROJECT_ID"
-          echo "Metadata: $METADATA"
-
-          RESPONSE_FILE="$(mktemp)"
-          HTTP_STATUS="$(curl --silent --show-error -X POST \
-            -H "X-Api-Token: $CF_API_TOKEN" \
-            -F "metadata=$METADATA;type=application/json" \
-            -F "file=@$JAR_PATH;type=application/java-archive" \
-            -o "$RESPONSE_FILE" -w "%{http_code}" \
-            "https://minecraft.curseforge.com/api/projects/$CF_PROJECT_ID/upload-file")"
-          RESPONSE="$(cat "$RESPONSE_FILE")"
-          rm -f "$RESPONSE_FILE"
-
-          echo "CurseForge HTTP status: $HTTP_STATUS"
-          echo "CurseForge response: $RESPONSE"
-
-          if [[ "$HTTP_STATUS" -lt 200 || "$HTTP_STATUS" -ge 300 ]]; then
-            echo "CurseForge rejected the upload. Check the response above for the exact reason."
-            exit 1
-          fi
-
-          FILE_ID="$(printf '%s' "$RESPONSE" | jq -r '.id // empty')"
-          if [[ -z "$FILE_ID" ]]; then
-            echo "CurseForge returned success but no file ID."
-            exit 1
-          fi
-          echo "CurseForge file uploaded successfully. File ID: $FILE_ID"
+        uses: itsmeow/curseforge-upload@v3
+        with:
+          token: ${{ secrets.CURSEFORGE_API_TOKEN }}
+          project_id: ${{ secrets.CURSEFORGE_PROJECT_ID }}
+          game_endpoint: minecraft
+          file_path: ${{ steps.jar.outputs.path }}
+          game_versions: "Minecraft 1.21.1,NeoForge"
+          release_type: ${{ inputs.release_type }}
+          display_name: "L2M v${{ inputs.version }}"
+          changelog: ${{ inputs.release_notes }}
+          changelog_type: markdown
