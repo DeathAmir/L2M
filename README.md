@@ -48,12 +48,24 @@ Instead of writing every small gameplay change in Java, mod authors will be able
 
 These are the project's current target technologies, not a claim that every integration is already complete.
 
+## Current preview capabilities
+
+The current development preview includes:
+
+- Client-side Lua script execution and package entrypoints.
+- A bounded in-game Developer Console available with `/l2m console`.
+- Package list, info, validation, enable, disable and remove commands.
+- Initial client events: `client_tick`, `player_join` and `player_leave`.
+- Declarative generated block and item definitions loaded during startup.
+
+This is still a preview. Server-authoritative events, remote package installation, a full Lua REPL, and live registry mutation are not part of this version.
+
 ## Project status
 
-L2M is in its early development stage. The repository is being prepared and core implementation work is ongoing. APIs, package formats, and compatibility guarantees may change.
+L2M targets Minecraft 1.21.1, NeoForge 21.1.252 and Java 21. The current development version is **1.0.1-beta.1**. APIs and package behavior may change during preview development.
 
-- **Latest release:** No public release has been published yet. Follow the repository to be notified when the first version is available.
-- **Build status:** Automated CI builds will be shown here once the GitHub Actions workflow is added.
+- **Release notes:** [1.0.1-beta.1](https://github.com/DeathAmir/L2M/blob/main/RELEASE_NOTES_1.0.1-beta.1.md)
+- **Build status:** [GitHub Actions](https://github.com/DeathAmir/L2M/actions)
 - **Issues and suggestions:** Use the [GitHub Issues](https://github.com/DeathAmir/L2M/issues) page.
 
 ## Repository activity
@@ -69,9 +81,13 @@ L2M is in its early development stage. The repository is being prepared and core
 
 ## Getting started
 
-L2M is not yet ready for general installation. Setup instructions, build steps, example mods, and API documentation will be added when the initial implementation is ready.
+Build the mod with Java 21:
 
-For now, you can follow development, inspect the source code, or open an issue with a feature request.
+```bash
+./gradlew clean build
+```
+
+The mod JAR is written to `build/libs/`, and the example package archive is written to `build/packages/`. Install the JAR in a Minecraft 1.21.1 NeoForge 21.1.252 client. Lua scripts and packages live under `config/l2m/`. See the [installation guide](https://deathamir.github.io/L2M/docs/installation.html) and [commands reference](https://deathamir.github.io/L2M/docs/commands.html).
 
 ## Links
 
