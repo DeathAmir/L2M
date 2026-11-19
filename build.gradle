@@ -95,7 +95,10 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
-dependencies {\n    implementation "org.luaj:luaj-jse:3.0.1"
+dependencies {
+    jarJar(implementation("org.luaj:luaj-jse:[3.0.1,3.1)")) {
+        jarJar.pin(it, "3.0.1")
+    }
     // Specify the version of Minecraft to use.
     // Depending on the plugin applied there are several options. We will assume you applied the userdev plugin as shown above.
     // The group for userdev is net.neoforged, the module name is neoforge, and the version is the same as the neoforge version.
@@ -174,4 +177,8 @@ idea {
         downloadJavadoc = true
     }
 }
-\n\ntasks.named("assemble") {\n    dependsOn("jarJar")\n}\n
+
+
+tasks.named("assemble") {
+    dependsOn("jarJar")
+}
