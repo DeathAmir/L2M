@@ -44,23 +44,26 @@ public final class LuaPackageAutoRunner {
 
     @SubscribeEvent
     public static void onPlayerHurt(LivingDamageEvent.Post event) {
-        var player = Minecraft.getInstance().player;
-        if (player == null || event.getEntity() != player) return;
+        var localPlayer = Minecraft.getInstance().player;
+        if (localPlayer == null || !event.getEntity().getUUID().equals(localPlayer.getUUID())) return;
         String damageType = event.getSource().getMsgId();
-        LuaEventBus.dispatch("player_hurt",
-            LuaValue.valueOf(event.getNewDamage()),
+        float damage = event.getNewDamage();
+        float health = event.getEntity().getHealth();
+        Minecraft.getInstance().execute(() -> LuaEventBus.dispatch("player_hurt",
+            LuaValue.valueOf(damage),
             LuaValue.valueOf(damageType),
-            LuaValue.valueOf(player.getHealth()));
+            LuaValue.valueOf(health)));
     }
 
     @SubscribeEvent
     public static void onPlayerEat(LivingEntityUseItemEvent.Finish event) {
-        var player = Minecraft.getInstance().player;
-        if (player == null || event.getEntity() != player) return;
-        if (event.getItem().getFoodProperties(player) == null) return;
+        var localPlayer = Minecraft.getInstance().player;
+        if (localPlayer == null || !event.getEntity().getUUID().equals(localPlayer.getUUID())) return;
+        if (event.getItem().getFoodProperties(event.getEntity()) == null) return;
         String itemId = BuiltInRegistries.ITEM.getKey(event.getItem().getItem()).toString();
-        LuaEventBus.dispatch("player_eat",
+        int count = event.getItem().getCount();
+        Minecraft.getInstance().execute(() -> LuaEventBus.dispatch("player_eat",
             LuaValue.valueOf(itemId),
-            LuaValue.valueOf(event.getItem().getCount()));
+            LuaValue.valueOf(count)));
     }
 }
