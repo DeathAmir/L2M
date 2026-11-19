@@ -20,7 +20,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
 @Mod(L2M.MODID)
@@ -32,6 +31,7 @@ public final class L2M {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public L2M(IEventBus modEventBus, ModContainer modContainer) {
+        LuaPackagePreloader.preload();
         loadGeneratedContent();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
@@ -60,7 +60,7 @@ public final class L2M {
                     if (!validId(id)) throw new IllegalArgumentException("Invalid block id: " + id);
                     float hardness = json.has("hardness") ? json.get("hardness").getAsFloat() : 1.5f;
                     boolean requiresTool = json.has("requiresTool") && json.get("requiresTool").getAsBoolean();
-                    RegistryObject<Block> block = BLOCKS.register(id, () -> {
+                    var block = BLOCKS.register(id, () -> {
                         BlockBehaviour.Properties properties = BlockBehaviour.Properties.of().strength(Math.max(0, hardness));
                         if (requiresTool) properties.requiresCorrectToolForDrops();
                         return new Block(properties);
