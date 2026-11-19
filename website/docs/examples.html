@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Examples · L2M</title><link rel="stylesheet" href="../style.css"></head>
+<body><header class="top"><a class="brand" href="../">L2M</a><nav><a href="./">Documentation</a><a href="examples.html">Examples</a><a href="api.html">API</a><a href="https://github.com/DeathAmir/L2M">GitHub</a></nav></header>
+<main><section class="hero"><span class="eyebrow">LUA RECIPES</span><h1>Small scripts.<br><em>Real game chat.</em></h1><p>Copy a sample into <code>config/l2m/scripts</code> and run it with <code>/l2m run filename</code>.</p></section>
+<section class="section"><h2>Hello message</h2><pre><code>l2m.chat("Hello, Minecraft!")</code></pre><p>Save as <code>hello.lua</code>, then run <code>/l2m run hello</code>.</p></section>
+<section class="section"><h2>Multiple messages</h2><pre><code>l2m.chat("L2M is loaded!")
+l2m.chat("This message was sent by Lua.")</code></pre><p>Each call sends one normal client chat message. Server chat rules still apply.</p></section>
+<section class="section"><h2>API availability</h2><p>At this preview stage, <code>l2m.chat(message)</code> is the only public Lua function. Timers, event hooks, server-side scripts, and world-editing APIs are not available yet.</p></section></main><footer><a href="./">Back to documentation</a> · <a href="https://github.com/DeathAmir/L2M">GitHub</a></footer></body></html>
