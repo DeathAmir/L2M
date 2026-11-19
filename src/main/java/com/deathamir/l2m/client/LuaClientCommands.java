@@ -45,7 +45,7 @@ public final class LuaClientCommands {
             return 0;
         }
 
-        Path script = SCRIPT_DIR.resolve(fileName + ".lua").normalize();
+        try {\n            Files.createDirectories(SCRIPT_DIR);\n        } catch (IOException exception) {\n            source.sendFailure(Component.literal("L2M: could not create scripts directory."));\n            return 0;\n        }\n\n        Path script = SCRIPT_DIR.resolve(fileName + ".lua").normalize();
         if (!script.startsWith(SCRIPT_DIR)) {
             source.sendFailure(Component.literal("Invalid script path."));
             return 0;
