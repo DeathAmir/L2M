@@ -20,7 +20,9 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 
 import com.deathamir.l2m.L2M;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;\nimport com.google.gson.JsonObject;\nimport com.google.gson.JsonParser;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 import net.minecraft.client.Minecraft;
@@ -123,7 +125,8 @@ public final class LuaClientCommands {
             });
             globals.set("l2m", api);
             globals.load(Files.readString(normalized), "@" + normalized.getFileName()).call();
-            if (source == null) localMessage("Automatically loaded " + normalized.getFileName());\n            else source.sendSuccess(() -> Component.literal("L2M: executed " + normalized.getFileName()), false);
+            if (source == null) localMessage("Automatically loaded " + normalized.getFileName());
+            else source.sendSuccess(() -> Component.literal("L2M: executed " + normalized.getFileName()), false);
             return 1;
         } catch (IOException | LuaError | IllegalArgumentException e) {
             L2M.LOGGER.error("Lua script failed: {}", script, e);
@@ -162,7 +165,8 @@ public final class LuaClientCommands {
     }
 
     private static int fail(CommandSourceStack source, String message) {
-        source.sendFailure(Component.literal("L2M: " + message));
+        if (source == null) localMessage(message);
+        else source.sendFailure(Component.literal("L2M: " + message));
         return 0;
     }
 
