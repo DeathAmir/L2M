@@ -29,7 +29,7 @@ public final class LuaPackagePreloader {
     public static void preload() {
         if (!Files.isDirectory(PACKAGE_DIR)) return;
         try (var packages = Files.list(PACKAGE_DIR)) {
-            packages.filter(Files::isDirectory).sorted().forEach(directory -> {
+            packages.filter(Files::isDirectory).filter(directory -> !Files.exists(directory.resolve(".disabled"))).sorted().forEach(directory -> {
                 Path manifestPath = directory.resolve("package.json");
                 if (!Files.isRegularFile(manifestPath)) return;
                 try {
@@ -73,6 +73,12 @@ public final class LuaPackagePreloader {
                 return LuaValue.NIL;
             }
         };
+        api.set("on", new TwoArgFunction() {
+            @Override public LuaValue call(LuaValue event, LuaValue callback) {
+                if (!callback.isfunction()) throw new LuaError("Event callback must be a function.");
+                return LuaValue.TRUE;
+            }
+        });
         api.set("systemChat", ignored);
         api.set("clientChat", ignored);
         api.set("chat", ignored);
